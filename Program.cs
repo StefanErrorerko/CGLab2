@@ -41,7 +41,7 @@ namespace CGLab2
             else if (results[0] == formats[1])
             {
                 var ppmReader = new PPMReader(startPath);
-                image = ppmReader.ReadP3();
+                image = ppmReader.Read();
                 if (results[1] == formats[0])
                 {
                     var bmped = image.ToBMP();

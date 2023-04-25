@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGLab2.Errors
 {
-    internal class InvalidFormatException
+    public class InvalidFormatException
     {
     }
 }
