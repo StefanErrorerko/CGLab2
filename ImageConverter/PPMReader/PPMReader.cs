@@ -72,7 +72,7 @@ public class PpmReader : IImageReader
     //    }
     //}
 
-    public Color[,] Read()
+    public Color[,] Read(byte[] fileContent)
     {
         int width = 0,
             height = 0,
@@ -120,4 +120,11 @@ public class PpmReader : IImageReader
         // var ppm = new ImagePPM(width, height, pixels);
         return pixels;
     }
+
+    public bool ValidateHeader(byte[] fileContent)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string FileExtention { get; }
 }

@@ -1,15 +1,14 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using ImageConverter.Protocols.Interfaces;
 
-namespace ImageConverter.Console;
+namespace ImageConverter.Orchestrator;
 
 public class PluginFactory
 {
     private readonly string _directory;
-    private readonly string _searchPattern;
-    private readonly IImageWriter[] _imageWriters;
     private readonly IImageReader[] _imageReaders;
+    private readonly IImageWriter[] _imageWriters;
+    private readonly string _searchPattern;
 
     public PluginFactory()
     {
@@ -29,5 +28,15 @@ public class PluginFactory
             .Where(type => typeof(IImageWriter).IsAssignableFrom(type) && type.IsClass)
             .Select(type => (IImageWriter)Activator.CreateInstance(type)!)
             .ToArray();
+    }
+
+    public IImageReader GetImageReaderInstance(byte[] fileContent)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IImageWriter GetImageWriterInstance(string objectiveExtention)
+    {
+        throw new NotImplementedException();
     }
 }

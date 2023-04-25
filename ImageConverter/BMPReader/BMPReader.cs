@@ -12,7 +12,7 @@ public class BmpReader : IImageReader
         _filePath = path;
     }
 
-    public Color[,] Read()
+    public Color[,] Read(byte[] fileContent)
     {
         using (var stream = new FileStream(_filePath, FileMode.Open))
         {
@@ -57,4 +57,11 @@ public class BmpReader : IImageReader
             return pixels;
         }
     }
+
+    public bool ValidateHeader(byte[] fileContent)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string FileExtention { get; }
 }

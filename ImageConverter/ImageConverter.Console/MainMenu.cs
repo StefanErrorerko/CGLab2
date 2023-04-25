@@ -12,7 +12,7 @@ public class MainMenu
     //first menu
     public string Display()
     {
-        Console.WriteLine("Hello, stranger!");
+        // Console.WriteLine("Hello, stranger!");
         if (_args.Length != 2) MenuIfNoArguments();
         return _args[0];
     }
@@ -20,19 +20,21 @@ public class MainMenu
     //menu if no arguments given with start of the program
     public string MenuIfNoArguments()
     {
-        Console.WriteLine("Please type an image source path and output image format using space:");
-        while (true)
-            try
-            {
-                _args = (Console.ReadLine() ?? throw new NullReferenceException()).Split(' ');
-                break;
-            }
-            catch (NullReferenceException)
-            {
-                Console.WriteLine("You input nothing.");
-            }
+        // Console.WriteLine("Please type an image source path and output image format using space:");
+        // while (true)
+        //     try
+        //     {
+        //         _args = (Console.ReadLine() ?? throw new NullReferenceException()).Split(' ');
+        //         break;
+        //     }
+        //     catch (NullReferenceException)
+        //     {
+        //         Console.WriteLine("You input nothing.");
+        //     }
+        //
+        // return _args[0];
 
-        return _args[0];
+        throw new NotImplementedException();
     }
 
     public string[] MenuFormatCheck(string[] formats)
@@ -53,7 +55,7 @@ public class MainMenu
 
     public void LastMenu()
     {
-        Console.WriteLine("Successfully converted.");
+       // Console.WriteLine("Successfully converted.");
     }
 
     public bool IfSupportedFormat(string[] formats, string format)
