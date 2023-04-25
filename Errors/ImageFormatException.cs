@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CGLab2.Errors;
 
-namespace CGLab2.Errors
+public class ImageFormatException : Exception
 {
-    public class InvalidFormatException
+    public ImageFormatException(string message) : base(message)
     {
     }
 }

@@ -1,6 +1,5 @@
-﻿namespace CGLab2.ImageProcessors
+﻿namespace CGLab2.ImageProcessors;
+
+public interface IImageWriter
 {
-    public interface IImageWriter
-    {
-    }
 }
