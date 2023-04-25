@@ -15,7 +15,7 @@ namespace CGLab2
             var menu = new MainMenu(args);
             var formats = new String[] { "bmp", "ppm"};
             var startPath = menu.Display();
-            var goalPath = startPath.Substring(0, startPath.LastIndexOf('\\'));
+            var goalPath = startPath.Substring(0, startPath.LastIndexOf('\\') + 1); 
 
             var results = menu.MenuFormatCheck(formats);
             Images.Image image;
@@ -45,19 +45,21 @@ namespace CGLab2
                 if (results[1] == formats[0])
                 {
                     var bmped = image.ToBMP();
+                    goalPath += "output.bmp";
                     var bmpWriter = new BMPWriter(goalPath, bmped);
                     bmpWriter.Write();
                 }
                 else if (results[1] == formats[1])
                 {
                     var ppmed = image.ToPPM();
+                    goalPath += "output.ppm";
                     var ppmWriter = new PPMWriter(goalPath, ppmed);
                     ppmWriter.Write();
                 }
             }
             menu.LastMenu();
-            //var goalBMPPath = @"C:\Users\chere\source\repos\CGLab2\TestPics\output.bmp";
-            //var goalPPMPath = @"C:\Users\chere\source\repos\CGLab2\TestPics\output.ppm";
+            //var goalBMPPath = @"C:\Users\chere\source\repos\CGLab2\TestPics\test.bmp";
+            //var goalPPMPath = @"C:\Users\chere\source\repos\CGLab2\TestPics\test.ppm";
         }
     }
 }

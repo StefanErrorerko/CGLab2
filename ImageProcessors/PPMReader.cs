@@ -106,7 +106,7 @@ namespace CGLab2.ImageProcessors
 
                 // read the PPM file pixel data
                 // read pixel data
-                for (int j = 0; j < height; j++)
+                for (int j = height - 1; j >= 0; j--)
                 {
                     var line = reader.ReadLine() ?? String.Empty;
                     if (line.StartsWith("#"))
@@ -115,12 +115,12 @@ namespace CGLab2.ImageProcessors
                         continue;
                     }
                     var pixelValues = line.Split(' ');
-                    for (int i = 0; i < width; i += 3)
+                    for (int i = 0; i < width; i++)
                     {
-                        var r = Int32.Parse(pixelValues[i]);
-                        var g = Int32.Parse(pixelValues[i + 1]);
-                        var b = Int32.Parse(pixelValues[i + 2]);
-                        pixels[i, j] = Color.FromArgb(r, g, b);
+                        var r = Int32.Parse(pixelValues[3*i]);
+                        var g = Int32.Parse(pixelValues[3*i + 1]);
+                        var b = Int32.Parse(pixelValues[3*i + 2]);
+                        pixels[i, j] = Color.FromArgb(b, g, r);
                     }
                 }
             }

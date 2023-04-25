@@ -56,7 +56,11 @@ namespace CGLab2.ImageProcessors
                         pixelData[(bmp.Width * (j + 1)) * bytesPerPixel + j * padding + k] = 0;
                     }
                 }
-                writer.Write(pixelData);
+                foreach(var data in pixelData)
+                {
+                    writer.Write(data);
+                }
+                //writer.Write(pixelData);
             }
         }
     }

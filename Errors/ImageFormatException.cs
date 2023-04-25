@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace CGLab2.Errors
 {
-    public class InvalidFormatException
+    public class ImageFormatException : FormatException
     {
+        public ImageFormatException() 
+            : base() 
+        { }
+        public ImageFormatException(string message) 
+            : base(message)
+        {
+
+        }
     }
 }
