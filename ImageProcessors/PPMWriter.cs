@@ -27,11 +27,11 @@ namespace CGLab2.ImageProcessors
             {
                 for (int i = 0; i < ppm.Width; i++)
                 {
-                    writer.Write($"{(int)(ppm.Pixels[i, j].R)} ");
-                    writer.Write($"{(int)ppm.Pixels[i, j].G} ");
-                    writer.Write($"{(int)ppm.Pixels[i, j].B} ");
+                    writer.Write((int)(ppm.Pixels[i, j].R));
+                    writer.Write((int)ppm.Pixels[i, j].G);
+                    writer.Write((int)ppm.Pixels[i, j].B);
                 }
-                writer.Write("\n");
+                writer.WriteLine();
             }
             writer.Close();
         }

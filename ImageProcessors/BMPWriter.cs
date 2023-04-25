@@ -1,10 +1,4 @@
 ﻿using CGLab2.Images;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CGLab2.ImageProcessors
 {
@@ -21,7 +15,7 @@ namespace CGLab2.ImageProcessors
         public void Write()
         {
             // Write the pixel data to a BMP file
-            using (BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Create)))
+            using (var writer = new BinaryWriter(File.Open(filePath, FileMode.Create)))
             {
                 // BMP header
                 writer.Write((byte)bmp.Signature[0]);
@@ -52,7 +46,7 @@ namespace CGLab2.ImageProcessors
                 {
                     for (int i=0; i< bmp.Width; i++)
                     {
-                        int offset = (bmp.Width * j + i) * bytesPerPixel + j * padding;
+                        var offset = (bmp.Width * j + i) * bytesPerPixel + j * padding;
                         pixelData[offset] = bmp.Pixels[i, j].R;
                         pixelData[offset + 1] = bmp.Pixels[i, j].G;
                         pixelData[offset + 2] = bmp.Pixels[i, j].B;

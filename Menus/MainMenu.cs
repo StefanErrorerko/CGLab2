@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CGLab2.Menus
+﻿namespace CGLab2.Menus
 {
     public class MainMenu
     {
@@ -15,6 +9,7 @@ namespace CGLab2.Menus
             this.args = args;
         }
 
+        //first menu
         public String Display()
         {
             Console.WriteLine("Hello, stranger!");
@@ -25,6 +20,7 @@ namespace CGLab2.Menus
             return args[0];
         }
 
+        //menu if no arguments given with start of the programm
         public String MenuIfNoArguments()
         {
             Console.WriteLine("Please type an image source path and output image format using space:");
@@ -32,13 +28,12 @@ namespace CGLab2.Menus
             {
                 try
                 {
-                    args = Console.ReadLine()?.Split(' ');
-                    _ = args ?? throw new NullReferenceException();
+                    args = (Console.ReadLine() ?? throw new NullReferenceException()).Split(' ');
                     break;
                 }
                 catch (NullReferenceException)
                 {
-                    //smth to output
+                    Console.WriteLine("You input nothing.");
                 }
             }
             return args[0];
@@ -50,7 +45,7 @@ namespace CGLab2.Menus
             var index = args[0].IndexOf('.');
             if (index >= 0)
             {
-                inputFormat = args[0].Substring(index + 1);
+                inputFormat = args[0][(index + 1)..];
                 if (IfSupportedFormat(formats, inputFormat) && IfSupportedFormat(formats, args[1]))
                 {
                     return new String[] { inputFormat, args[1] };

@@ -1,10 +1,6 @@
 ﻿using CGLab2.Images;
-using System;
-using System.Collections.Generic;
+using CGLab2.Errors;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CGLab2.ImageProcessors
 {
@@ -76,47 +72,54 @@ namespace CGLab2.ImageProcessors
         //    }
         //}
 
-        public ImagePPM ReadP3()
+        public Images.Image Read()
         {
             int width = 0, 
                 height = 0, 
                 maxColor = 0;
-            Color[,] pixels = new Color[width, height];
+            var pixels = new Color[width, height];
 
             // read the PPM file header
-            using (StreamReader reader = new StreamReader(filePath))
+            using (var reader = new StreamReader(filePath))
             {
                 if (reader.ReadLine() != "P3")
                 {
-                    Console.WriteLine("Error: Invalid magic number");
-                    return null;
+                    throw new ImageFormatException("Invalid file format (not PPM)");
                 }
 
                 // read image dimensions
-                string[] dimensions = reader.ReadLine().Split(' ');
+                var dimensions = reader.ReadLine()?.Split(' ');
+                if(dimensions is null)
+                {
+                    throw new ImageFormatException("Error occured while reading dimnesions in PPM");
+                }
                 width = int.Parse(dimensions[0]);
                 height = int.Parse(dimensions[1]);
                 pixels = new Color[width, height];
 
                 // read max color value
-                maxColor = int.Parse(reader.ReadLine());
+                maxColor = int.Parse(reader.ReadLine() ?? "0");
+                if(maxColor == 0)
+                {
+                    throw new ImageFormatException("Error occured while reading max color value in PPM"); ;
+                }
 
                 // read the PPM file pixel data
                 // read pixel data
                 for (int j = 0; j < height; j++)
                 {
-                    string line = reader.ReadLine();
+                    var line = reader.ReadLine() ?? String.Empty;
                     if (line.StartsWith("#"))
                     {
                         line = reader.ReadLine();
                         continue;
                     }
-                    string[] pixelValues = line.Split(' ');
+                    var pixelValues = line.Split(' ');
                     for (int i = 0; i < width; i += 3)
                     {
-                        int r = Int32.Parse(pixelValues[i]);
-                        int g = Int32.Parse(pixelValues[i + 1]);
-                        int b = Int32.Parse(pixelValues[i + 2]);
+                        var r = Int32.Parse(pixelValues[i]);
+                        var g = Int32.Parse(pixelValues[i + 1]);
+                        var b = Int32.Parse(pixelValues[i + 2]);
                         pixels[i, j] = Color.FromArgb(r, g, b);
                     }
                 }

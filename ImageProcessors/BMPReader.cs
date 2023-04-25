@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 using CGLab2.Images;
-using System.Threading.Channels;
+using CGLab2.Errors;
 
 namespace CGLab2.ImageProcessors
 {
@@ -17,17 +12,17 @@ namespace CGLab2.ImageProcessors
             filePath = path;
         }
 
-        public ImageBMP Read()
+        public Images.Image Read()
         {
             using (var stream = new FileStream(filePath, FileMode.Open))
             {
-                // Read file header
+                // Read file header (14 bytes)
                 var header = new byte[14];
                 stream.Read(header, 0, header.Length);
+                //if header BM
                 if (header[0] != 'B' || header[1] != 'M')
                 {
-                    Console.WriteLine("Invalid BMP file format");
-                    return null;
+                    throw new ImageFormatException("Invalid file format (not BMP)");
                 }
                 int pixelDataOffset = BitConverter.ToInt32(header, 10);
 
@@ -54,7 +49,7 @@ namespace CGLab2.ImageProcessors
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        int offset = (width * y + x) * bytesPerPixel + y * padding;
+                        var offset = (width * y + x) * bytesPerPixel + y * padding;
                         var b = pixelData[offset];
                         var g = pixelData[offset + 1];
                         var r = pixelData[offset + 2];
