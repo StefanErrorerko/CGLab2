@@ -1,46 +1,46 @@
 ﻿using CGLab2.Images;
 
-namespace CGLab2.ImageProcessors
+namespace CGLab2.ImageProcessors;
+
+public class BmpWriter : IImageWriter
 {
-    public class BMPWriter : IImageWriter
+    private readonly ImageBmp _bmp;
+    private readonly string _filePath;
+
+    public BmpWriter(string path, ImageBmp bmp)
     {
-        String filePath;
-        ImageBMP bmp;
-        public BMPWriter(String path, ImageBMP bmp)
-        {
-            filePath = path;
-            this.bmp = bmp;
-        }
+        _filePath = path;
+        _bmp = bmp;
+    }
 
-        public void Write()
-        {
-            // Write the pixel data to a BMP file
-            using (var writer = new BinaryWriter(File.Open(filePath, FileMode.Create)))
-            {
-                // BMP header
-                writer.Write((byte)bmp.Signature[0]);
-                writer.Write((byte)bmp.Signature[1]);
-                writer.Write(bmp.FileSize);
-                writer.Write(bmp.Reserved);
-                writer.Write(bmp.FileOffset);
+    public void Write()
+    {
+        // Write the pixel data to a BMP file
+        using var writer = new BinaryWriter(File.Open(_filePath, FileMode.Create));
+        // BMP header
+        writer.Write((byte)_bmp.Signature[0]);
+        writer.Write((byte)_bmp.Signature[1]);
+        writer.Write(_bmp.FileSize);
+        writer.Write(_bmp.Reserved);
+        writer.Write(_bmp.FileOffset);
 
-                // DIB header
-                writer.Write(bmp.DIBHeaderSize);
-                writer.Write(bmp.Width);
-                writer.Write(bmp.Height);
-                writer.Write(bmp.Planes);
-                writer.Write(bmp.ColorDepth);
-                writer.Write(bmp.Compression);
-                writer.Write(bmp.ImageSize);
-                writer.Write(bmp.HorizontalResolution);
-                writer.Write(bmp.VerticalResolution);
-                writer.Write(bmp.ColorPaletteAmount);
-                writer.Write((int)0);
+        // DIB header
+        writer.Write(_bmp.DibHeaderSize);
+        writer.Write(_bmp.Width);
+        writer.Write(_bmp.Height);
+        writer.Write(_bmp.Planes);
+        writer.Write(_bmp.ColorDepth);
+        writer.Write(_bmp.Compression);
+        writer.Write(_bmp.ImageSize);
+        writer.Write(_bmp.HorizontalResolution);
+        writer.Write(_bmp.VerticalResolution);
+        writer.Write(_bmp.ColorPaletteAmount);
+        writer.Write(0);
 
-                var bytesPerPixel = bmp.ColorDepth / 8;
-                var padding = (4 - (bmp.Width * bytesPerPixel) % 4) % 4;
-                var imageSize = bmp.Width * bmp.Height * bytesPerPixel;
-                var pixelData = new byte[imageSize + bmp.Height * padding];
+        var bytesPerPixel = _bmp.ColorDepth / 8;
+        var padding = (4 - _bmp.Width * bytesPerPixel % 4) % 4;
+        var imageSize = _bmp.Width * _bmp.Height * bytesPerPixel;
+        var pixelData = new byte[imageSize + _bmp.Height * padding];
 
                 for(int j=0; j< bmp.Height; j++)
                 {

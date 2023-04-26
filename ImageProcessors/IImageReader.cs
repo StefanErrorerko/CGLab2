@@ -1,7 +1,8 @@
-﻿namespace CGLab2.ImageProcessors
+﻿using CGLab2.Images;
+
+namespace CGLab2.ImageProcessors;
+
+public interface IImageReader
 {
-    public interface IImageReader
-    {
-        public Images.Image Read();
-    }
+    public Image Read();
 }

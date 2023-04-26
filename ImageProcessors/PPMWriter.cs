@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CGLab2.Images;
+﻿using CGLab2.Images;
 
-namespace CGLab2.ImageProcessors
+namespace CGLab2.ImageProcessors;
+
+public class PPMWriter : IImageWriter
 {
-    public class PPMWriter : IImageWriter
+    private readonly string _filePath;
+    private readonly ImagePPM _ppm;
+
+    public PPMWriter(string path, ImagePPM ppm)
     {
-        String filePath;
-        ImagePPM ppm;
-        public PPMWriter(String path, ImagePPM ppm) 
-        {
-            filePath = path;
-            this.ppm = ppm;
-        }
+        _filePath = path;
+        _ppm = ppm;
+    }
 
         public void Write()
         {

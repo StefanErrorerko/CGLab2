@@ -1,10 +1,7 @@
-﻿using CGLab2.Menus;
+﻿using CGLab2.ImageProcessors;
 using CGLab2.Images;
 using CGLab2.Images.Extensions;
-using System.Drawing;
-using System;
-using System.Text;
-using CGLab2.ImageProcessors;
+using CGLab2.Menus;
 
 namespace CGLab2
 {
