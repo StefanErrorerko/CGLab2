@@ -121,8 +121,7 @@ public class PPMReader : IImageReader
                     }
                 }
             }
-            var ppm = new ImagePPM(width, height, pixels);
-            return ppm;
-        }
+        var ppm = new ImagePPM(width, height, pixels);
+        return ppm;
     }
 }

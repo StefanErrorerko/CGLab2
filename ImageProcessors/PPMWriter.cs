@@ -13,24 +13,23 @@ public class PPMWriter : IImageWriter
         _ppm = ppm;
     }
 
-        public void Write()
+    public void Write()
+    {
+        var writer = new StreamWriter(_filePath);
+        writer.WriteLine(_ppm.Header);
+        writer.WriteLine($"{_ppm.Width} {_ppm.Height}");
+        writer.WriteLine(_ppm.MaxValue);
+        for (int j = _ppm.Height - 1; j >= 0; j--)
         {
-            var writer = new StreamWriter(filePath);
-            writer.WriteLine(ppm.Header);
-            writer.WriteLine($"{ppm.Width} {ppm.Height}");
-            writer.WriteLine(ppm.MaxValue);
-            for (int j = ppm.Height - 1; j >= 0; j--)
+            for (int i = 0; i < _ppm.Width; i++)
             {
-                for (int i = 0; i < ppm.Width; i++)
-                {
-                    writer.Write($"{ppm.Pixels[i, j].B} ");
-                    writer.Write($"{ppm.Pixels[i, j].G} ");
-                    writer.Write($"{ppm.Pixels[i, j].R} ");
-                    
-                }
-                writer.Write('\n');
+                writer.Write($"{_ppm.Pixels[i, j].B} ");
+                writer.Write($"{_ppm.Pixels[i, j].G} ");
+                writer.Write($"{_ppm.Pixels[i, j].R} ");
+                
             }
-            writer.Close();
+            writer.Write('\n');
         }
+        writer.Close();
     }
 }

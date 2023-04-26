@@ -24,7 +24,7 @@ namespace CGLab2
                 {
                     var bmped = image.ToBMP();
                     goalPath += "output.bmp";
-                    var bmpWriter = new BMPWriter(goalPath, bmped);
+                    var bmpWriter = new BmpWriter(goalPath, bmped);
                     bmpWriter.Write();
                 }
                 else if (results[1] == formats[1])
@@ -43,7 +43,7 @@ namespace CGLab2
                 {
                     var bmped = image.ToBMP();
                     goalPath += "output.bmp";
-                    var bmpWriter = new BMPWriter(goalPath, bmped);
+                    var bmpWriter = new BmpWriter(goalPath, bmped);
                     bmpWriter.Write();
                 }
                 else if (results[1] == formats[1])

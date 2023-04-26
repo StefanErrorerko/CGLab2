@@ -2,4 +2,5 @@
 
 public interface IImageWriter
 {
+    public void Write();
 }
