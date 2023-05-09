@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ImageConverter.Orchestrator\ImageConverter.Orchestrator.csproj" />
       <ProjectReference Include="..\ImageConverter.Protocols\ImageConverter.Protocols.csproj" />
     </ItemGroup>
 
