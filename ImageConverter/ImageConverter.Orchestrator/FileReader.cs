@@ -2,11 +2,11 @@
 
 public class FileReader
 {
-    public static byte[] ReadFile(string path)
+    public static byte[] ReadAllBytes(string path)
     {
         if (!File.Exists(path))
         {
-            throw new FileNotFoundException("File is not found");
+            throw new FileNotFoundException("Source file is not found");
         }
 
         return File.ReadAllBytes(path);

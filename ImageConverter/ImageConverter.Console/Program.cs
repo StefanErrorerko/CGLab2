@@ -1,18 +1,22 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using ImageConverter.Console;
+﻿using ImageConverter.Console;
 using ImageConverter.Orchestrator;
 
 const string sourceFlag = "source";
-const string objectiveExtensionFlag = "goal-format";
+const string objectiveExtentionFlag = "goal-format";
 const string outputFlag = "output";
 
 var parser = new CommandLineParser(args);
 
-var objectiveExtension = parser.GetArgument(objectiveExtensionFlag);
+var objectiveExtention = parser.GetArgument(objectiveExtentionFlag);
 var source = parser.GetArgument(sourceFlag);
 var output = parser.GetArgument(outputFlag);
 
-ConverterOrchestrator converter = new ConverterOrchestrator();
-converter.Convert(source, objectiveExtension);
- Console.ReadKey();
+try
+{
+    FileConverter converter = new FileConverter();
+    converter.Convert(source, objectiveExtention, output);
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+}

@@ -4,5 +4,6 @@ namespace ImageConverter.Protocols.Interfaces;
 
 public interface IImageWriter
 {
-    public void Write(string filePath, Color[,] pixels);
+    public string FileExtention { get; }
+    public byte[] Write(Color[,] pixels);
 }

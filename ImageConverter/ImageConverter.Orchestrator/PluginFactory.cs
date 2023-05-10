@@ -5,38 +5,53 @@ namespace ImageConverter.Orchestrator;
 
 public class PluginFactory
 {
-    private readonly string _directory;
-    private readonly IImageReader[] _imageReaders;
-    private readonly IImageWriter[] _imageWriters;
-    private readonly string _searchPattern;
+    private const string Directory = "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\net6.0";
+    private const string SearchPattern = "*.dll";
+
+    private readonly List<IImageReader> _imageReaders;
+    private readonly List<IImageWriter> _imageWriters;
 
     public PluginFactory()
     {
-        _directory = Directory.GetCurrentDirectory();
-        _searchPattern = "*.dll";
+        var assemblies = LoadAssemblies();
 
-        var assemblies = Directory.GetFiles(_directory, _searchPattern)
-            .Select(Assembly.LoadFrom)
-            .ToList();
-
-        _imageReaders = assemblies.SelectMany(s => s.GetExportedTypes())
-            .Where(type => typeof(IImageReader).IsAssignableFrom(type) && type.IsClass)
-            .Select(type => (IImageReader)Activator.CreateInstance(type)!)
-            .ToArray();
-
-        _imageWriters = assemblies.SelectMany(s => s.GetExportedTypes())
-            .Where(type => typeof(IImageWriter).IsAssignableFrom(type) && type.IsClass)
-            .Select(type => (IImageWriter)Activator.CreateInstance(type)!)
-            .ToArray();
+        _imageReaders = InstantiatePlugins<IImageReader>(assemblies);
+        _imageWriters = InstantiatePlugins<IImageWriter>(assemblies);
     }
 
-    public IImageReader GetImageReaderInstance(byte[] fileContent)
+    private static List<Assembly> LoadAssemblies()
     {
-        throw new NotImplementedException();
+        var assemblies = System.IO.Directory.GetFiles(Directory, SearchPattern)
+            .Select(Assembly.LoadFrom)
+            .ToList();
+        return assemblies;
+    }
+
+    private static List<T> InstantiatePlugins<T>(IEnumerable<Assembly> assemblies) where T : class
+    {
+        return assemblies.SelectMany(s => s.GetExportedTypes())
+            .Where(type => typeof(T).IsAssignableFrom(type) && type.IsClass)
+            .Select(type => (T)Activator.CreateInstance(type)!)
+            .ToList();
+    }
+
+    public IImageReader GetImageReaderInstance(byte[] bytes)
+    {
+        return _imageReaders.FirstOrDefault(reader => reader.ValidateHeader(bytes));
     }
 
     public IImageWriter GetImageWriterInstance(string objectiveExtention)
     {
-        throw new NotImplementedException();
+        return _imageWriters.FirstOrDefault(writer => writer.FileExtention == objectiveExtention);
+    }
+
+    public string[] GetSupportedReadersExtensions()
+    {
+        return _imageReaders.Select(reader => $".{reader.FileExtention}").ToArray();
+    }
+
+    public string[] GetSupportedWritersExtensions()
+    {
+        return _imageWriters.Select(writer => $".{writer.FileExtention}").ToArray();
     }
 }

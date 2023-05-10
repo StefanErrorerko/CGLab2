@@ -5,11 +5,10 @@ namespace PPMReader;
 
 public class PpmReader : IImageReader
 {
-    private readonly string _filePath;
-
-    public PpmReader(string path)
+    private readonly string _filePath = "";
+    public string FileExtention => "ppm";
+    public PpmReader()
     {
-        _filePath = path;
     }
 
     //public ImagePPM ReadP6()
@@ -72,48 +71,39 @@ public class PpmReader : IImageReader
     //    }
     //}
 
-    public Color[,] Read(byte[] fileContent)
+    public Color[,] Read(byte[] bytes)
     {
-        int width = 0,
-            height = 0,
-            maxColor = 0;
-        var pixels = new Color[width, height];
+        int width,
+            height,
+            maxColor;
+        Color[,] pixels;
 
-        // read the PPM file header
-        using (var reader = new StreamReader(_filePath))
+        using var reader = new StreamReader(_filePath);
+        var dimensions = reader.ReadLine()?.Split(' ');
+        // if (dimensions is null) throw new Exception("Error occured while reading dimnesions in PPM");
+        width = int.Parse(dimensions[0]);
+        height = int.Parse(dimensions[1]);
+        pixels = new Color[width, height];
+
+        maxColor = int.Parse(reader.ReadLine() ?? "0");
+        // if (maxColor == 0) throw new Exception("Error occured while reading max color value in PPM");
+
+        for (var j = 0; j < height; j++)
         {
-            if (reader.ReadLine() != "P3") throw new Exception("Invalid file format (not PPM)");
-
-            // read image dimensions
-            var dimensions = reader.ReadLine()?.Split(' ');
-            if (dimensions is null) throw new Exception("Error occured while reading dimnesions in PPM");
-            width = int.Parse(dimensions[0]);
-            height = int.Parse(dimensions[1]);
-            pixels = new Color[width, height];
-
-            // read max color value
-            maxColor = int.Parse(reader.ReadLine() ?? "0");
-            if (maxColor == 0) throw new Exception("Error occured while reading max color value in PPM");
-
-            // read the PPM file pixel data
-            // read pixel data
-            for (var j = 0; j < height; j++)
+            var line = reader.ReadLine() ?? string.Empty;
+            if (line.StartsWith("#"))
             {
-                var line = reader.ReadLine() ?? string.Empty;
-                if (line.StartsWith("#"))
-                {
-                    line = reader.ReadLine();
-                    continue;
-                }
+                line = reader.ReadLine();
+                continue;
+            }
 
-                var pixelValues = line.Split(' ');
-                for (var i = 0; i < width; i += 3)
-                {
-                    var r = int.Parse(pixelValues[i]);
-                    var g = int.Parse(pixelValues[i + 1]);
-                    var b = int.Parse(pixelValues[i + 2]);
-                    pixels[i, j] = Color.FromArgb(r, g, b);
-                }
+            var pixelValues = line.Split(' ');
+            for (var i = 0; i < width; i += 3)
+            {
+                var r = int.Parse(pixelValues[i]);
+                var g = int.Parse(pixelValues[i + 1]);
+                var b = int.Parse(pixelValues[i + 2]);
+                pixels[i, j] = Color.FromArgb(r, g, b);
             }
         }
 
@@ -121,10 +111,23 @@ public class PpmReader : IImageReader
         return pixels;
     }
 
-    public bool ValidateHeader(byte[] fileContent)
+    public bool ValidateHeader(byte[] bytes)
     {
-        throw new NotImplementedException();
-    }
+        if (bytes == null || bytes.Length < 3)
+        {
+            return false;
+        }
 
-    public string FileExtention { get; }
+        if (bytes[0] != 'P' || bytes[1] != '6')
+        {
+            return false;
+        }
+
+        if (!char.IsWhiteSpace((char)bytes[2]))
+        {
+            return false;
+        }
+
+        return true;
+    }
 }
