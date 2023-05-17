@@ -9,7 +9,7 @@ var parser = new CommandLineParser(args);
 
 var objectiveExtention = parser.GetArgument(objectiveExtentionFlag);
 var source = parser.GetArgument(sourceFlag);
-var output = parser.GetArgument(outputFlag);
+var output = parser.GetOptionalArgument(outputFlag, source, objectiveExtention);
 
 try
 {

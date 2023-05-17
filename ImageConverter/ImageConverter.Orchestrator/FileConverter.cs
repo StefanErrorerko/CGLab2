@@ -12,7 +12,6 @@ public class FileConverter
         _defaultFilePath = Path.GetDirectoryName(sourceFile) +
                            Path.DirectorySeparatorChar +
                            Path.GetFileNameWithoutExtension(sourceFile);
-
         var bytes = FileReader.ReadAllBytes(sourceFile);
 
         var imageReader = _factory.GetImageReaderInstance(bytes);

@@ -55,7 +55,7 @@ public class BmpWriter : IImageWriter
     public byte[] Write(Color[,] pixels)
     {
         var bytesPerPixel = sizeof(byte) * 3; // Assuming each color channel is represented by a byte (8 bits)
-        var padding = (4 - pixels.GetLength(1) * bytesPerPixel % 4) % 4;
+        var padding = (4 - pixels.GetLength(0) * bytesPerPixel % 4) % 4;
         var imageSize = pixels.GetLength(0) * pixels.GetLength(1) * bytesPerPixel;
         var pixelDataSize = imageSize + pixels.GetLength(1) * padding;
         var fileOffset = 54; // Offset where pixel data starts in BMP file
@@ -92,16 +92,16 @@ public class BmpWriter : IImageWriter
         bytes[17] = 0;
 
 // Width
-        bytes[18] = (byte)(pixels.GetLength(1));
-        bytes[19] = (byte)(pixels.GetLength(1) >> 8);
-        bytes[20] = (byte)(pixels.GetLength(1) >> 16);
-        bytes[21] = (byte)(pixels.GetLength(1) >> 24);
+        bytes[18] = (byte)(pixels.GetLength(0));
+        bytes[19] = (byte)(pixels.GetLength(0) >> 8);
+        bytes[20] = (byte)(pixels.GetLength(0) >> 16);
+        bytes[21] = (byte)(pixels.GetLength(0) >> 24);
 
 // Height
-        bytes[22] = (byte)(pixels.GetLength(0));
-        bytes[23] = (byte)(pixels.GetLength(0) >> 8);
-        bytes[24] = (byte)(pixels.GetLength(0) >> 16);
-        bytes[25] = (byte)(pixels.GetLength(0) >> 24);
+        bytes[22] = (byte)(pixels.GetLength(1));
+        bytes[23] = (byte)(pixels.GetLength(1) >> 8);
+        bytes[24] = (byte)(pixels.GetLength(1) >> 16);
+        bytes[25] = (byte)(pixels.GetLength(1) >> 24);
 
 // Planes (1 plane)
         bytes[26] = 0x01;
@@ -117,13 +117,13 @@ public class BmpWriter : IImageWriter
         }
 
         int dataIndex = fileOffset;
-        for (var j = 0; j < pixels.GetLength(0); j++)
+        for (var j = 0; j < pixels.GetLength(1); j++)
         {
-            for (var i = 0; i < pixels.GetLength(1); i++)
+            for (var i = 0; i < pixels.GetLength(0); i++)
             {
-                bytes[dataIndex++] = pixels[i, j].B;
-                bytes[dataIndex++] = pixels[i, j].G;
                 bytes[dataIndex++] = pixels[i, j].R;
+                bytes[dataIndex++] = pixels[i, j].G;
+                bytes[dataIndex++] = pixels[i, j].B;
             }
 
             for (var k = 0; k < padding; k++)

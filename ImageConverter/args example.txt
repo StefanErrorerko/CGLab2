@@ -1,0 +1,2 @@
+source=C:\Users\chere\source\repos\CGLab2\ImageConverter\Images\test.ppm
+goal-format=bmp

@@ -26,6 +26,14 @@ internal class CommandLineParser
 
         return value;
     }
+    public string GetOptionalArgument(string key, string defaultValue, string format)
+    {
+        if(_arguments.TryGetValue(key, out var value)) return value;
+
+        value = defaultValue.Substring(0, defaultValue.LastIndexOf('\\') + 1);
+        value += $"output.{format}";
+        return value;
+    }
 
     public bool HasArgument(string key)
     {

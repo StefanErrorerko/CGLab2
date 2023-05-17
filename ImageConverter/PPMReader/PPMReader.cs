@@ -78,32 +78,32 @@ public class PpmReader : IImageReader
             maxColor;
         Color[,] pixels;
 
-        using var reader = new StreamReader(_filePath);
-        var dimensions = reader.ReadLine()?.Split(' ');
+        //using var reader = new StreamReader(_filePath);
         // if (dimensions is null) throw new Exception("Error occured while reading dimnesions in PPM");
+        var lines = System.Text.Encoding.Default.GetString(bytes).Split('\n');
+        var dimensions = lines[1].Split(' ');
         width = int.Parse(dimensions[0]);
         height = int.Parse(dimensions[1]);
         pixels = new Color[width, height];
 
-        maxColor = int.Parse(reader.ReadLine() ?? "0");
+        maxColor = int.Parse(lines[2]);
         // if (maxColor == 0) throw new Exception("Error occured while reading max color value in PPM");
 
-        for (var j = 0; j < height; j++)
+        for (var j = height - 1; j >= 0 ; j--)
         {
-            var line = reader.ReadLine() ?? string.Empty;
-            if (line.StartsWith("#"))
+            var line = lines[3 + (height - 1 - j)];
+            if (line.StartsWith('#'))
             {
-                line = reader.ReadLine();
                 continue;
             }
 
-            var pixelValues = line.Split(' ');
-            for (var i = 0; i < width; i += 3)
+            var values = line.Split(' ');
+            for (int i = 0; i < width; i++)
             {
-                var r = int.Parse(pixelValues[i]);
-                var g = int.Parse(pixelValues[i + 1]);
-                var b = int.Parse(pixelValues[i + 2]);
-                pixels[i, j] = Color.FromArgb(r, g, b);
+                var r = Int32.Parse(values[3 * i]);
+                var g = Int32.Parse(values[3 * i + 1]);
+                var b = Int32.Parse(values[3 * i + 2]);
+                pixels[i, j] = Color.FromArgb(b, g, r);
             }
         }
 
@@ -118,7 +118,7 @@ public class PpmReader : IImageReader
             return false;
         }
 
-        if (bytes[0] != 'P' || bytes[1] != '6')
+        if (bytes[0] != 'P' || bytes[1] != '3')
         {
             return false;
         }

@@ -33,9 +33,9 @@ public class BmpReader : IImageReader
             for (var x = 0; x < width; x++)
             {
                 var offset = (width * y + x) * bytesPerPixel + y * padding;
-                var b = pixelData[offset];
+                var r = pixelData[offset];
                 var g = pixelData[offset + 1];
-                var r = pixelData[offset + 2];
+                var b = pixelData[offset + 2];
                 var pixel = Color.FromArgb(r, g, b);
                 pixels[x, y] = pixel;
             }

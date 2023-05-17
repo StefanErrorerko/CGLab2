@@ -5,7 +5,7 @@ namespace ImageConverter.Orchestrator;
 
 public class PluginFactory
 {
-    private const string Directory = "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\net6.0";
+    private const string Directory = "..\\..\\..\\..\\Libraries";
     private const string SearchPattern = "*.dll";
 
     private readonly List<IImageReader> _imageReaders;
