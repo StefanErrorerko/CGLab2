@@ -65,4 +65,11 @@ public struct Triangle : IObjectProtocol
 
         return t;
     }
+    
+    public override string ToString()
+    {
+        return $"V1: ({V1.X}, {V1.Y}, {V1.Z})\n" +
+               $"V2: ({V2.X}, {V2.Y}, {V2.Z})\n" +
+               $"V3: ({V3.X}, {V3.Y}, {V3.Z})";
+    }
 }
