@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "CGLab2": {
-      "commandName": "Project",
-      "commandLineArgs": "Hd\r\nf"
-    }
-  }
-}
