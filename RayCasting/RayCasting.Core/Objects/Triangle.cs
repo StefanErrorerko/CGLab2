@@ -1,7 +1,7 @@
-﻿using RayCasting.Core.Objects;
+﻿using RayCasting.Core.Structures;
 using RayCasting.Core.Tracer;
 
-namespace RayCasting.Core.Structures;
+namespace RayCasting.Core.Objects;
 
 public struct Triangle : IObjectProtocol
 {
@@ -9,7 +9,7 @@ public struct Triangle : IObjectProtocol
     public Point3 V2 { get; }
     public Point3 V3 { get; }
 
-    private Vector3 _normal { get; }
+    private Vector3 _normal;
 
     public Triangle(Point3 p1, Point3 p2, Point3 p3)
     {
