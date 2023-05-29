@@ -8,7 +8,7 @@ public class Scene
     //MARK: - Properties
     
     private Vector3 _lightVector;
-    public List<IObjectProtocol> Objects = new();
+    public List<IObject> Objects = new();
     public Vector3 Light
     {
         get
@@ -24,7 +24,7 @@ public class Scene
     
     //MARK: - Initialization
     
-    public Scene(List<IObjectProtocol> objects, Vector3 light)
+    public Scene(List<IObject> objects, Vector3 light)
     {
         this.Objects = objects;
         this._lightVector = light.Normalized();

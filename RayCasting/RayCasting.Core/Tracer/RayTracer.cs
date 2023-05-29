@@ -59,9 +59,9 @@ public class RayTracer : IRayTracerProtocol
 
     //MARK: - Private methods
 
-    private (IObjectProtocol Object, float T) GetClosestObject(IList<IObjectProtocol> objects, Ray ray)
+    private (IObject Object, float T) GetClosestObject(IList<IObject> objects, Ray ray)
     {
-        IObjectProtocol closestObject = null;
+        IObject closestObject = null;
         float? closestT = null;
 
         foreach (var obj in objects)

@@ -3,7 +3,7 @@ using RayCasting.Core.Tracer;
 
 namespace RayCasting.Core.Objects;
 
-public struct Disk : IObjectProtocol
+public struct Disk : IObject
 {
     // Properties
 

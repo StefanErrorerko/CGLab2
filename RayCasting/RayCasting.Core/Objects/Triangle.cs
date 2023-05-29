@@ -3,7 +3,7 @@ using RayCasting.Core.Tracer;
 
 namespace RayCasting.Core.Objects;
 
-public struct Triangle : IObjectProtocol
+public struct Triangle : IObject
 {
     public Point3 V1 { get; }
     public Point3 V2 { get; }

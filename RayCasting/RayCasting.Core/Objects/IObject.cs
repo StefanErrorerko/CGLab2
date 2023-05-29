@@ -3,7 +3,7 @@ using RayCasting.Core.Tracer;
 
 namespace RayCasting.Core.Objects;
 
-public interface IObjectProtocol
+public interface IObject
 {
     Vector3 Normal(Vector3 point);
     float? Intersects(Ray ray);
