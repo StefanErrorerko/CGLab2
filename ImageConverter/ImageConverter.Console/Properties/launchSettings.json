@@ -2,7 +2,7 @@
   "profiles": {
     "ImageConverter.Console": {
       "commandName": "Project",
-      "commandLineArgs": "source=C:\\Users\\chere\\source\\repos\\CGLab2\\ImageConverter\\test.bmp\r\ngoal-format=png"
+      "commandLineArgs": "source=C:\\Users\\chere\\source\\repos\\CGLab2\\ImageConverter\\test.bmp\r\ngoal-format=ppm"
     }
   }
 }
