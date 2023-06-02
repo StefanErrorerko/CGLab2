@@ -1,9 +1,16 @@
-﻿using RayCasting.Core.Structures;
+﻿using RayCasting.Core.Misc;
+using RayCasting.Core.Structures;
 
 namespace RayCasting.Core.Tracer;
 
 public interface ICameraProtocol
 {
-    Vector3 Origin { get; }
-    Ray GetRay(float u, float v);
+    public Vector3 Direction { get; set; }
+    public float Distance { get; set; }
+    public int FieldOfView { get; set; }
+    public int HorizontalResolution { get; set; }
+    public int VerticalResolution { get; set; }
+    public Transverter Transverter { get; set; }
+    public Vector3 Origin { get; set; }
+    public Vector3[,] GetProjectionPlane();
 }
