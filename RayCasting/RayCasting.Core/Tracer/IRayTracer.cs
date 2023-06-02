@@ -1,6 +1,6 @@
-﻿namespace RayCasting.Core;
+﻿namespace RayCasting.Core.Tracer;
 
 public interface IRayTracer
 {
-    float[][] Trace();
+    float[,] Trace();
 }

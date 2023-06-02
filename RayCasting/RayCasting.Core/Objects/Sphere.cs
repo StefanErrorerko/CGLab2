@@ -43,4 +43,9 @@ public struct Sphere : IObject
         }
         return null;
     }
+
+    public Point3? GetIntersectionPointWith(Ray ray)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -36,4 +36,9 @@ public struct Disk : IObject
         if ((point - Center).Length > Radius) return null;
         return t;
     }
+
+    public Point3? GetIntersectionPointWith(Ray ray)
+    {
+        throw new NotImplementedException();
+    }
 }

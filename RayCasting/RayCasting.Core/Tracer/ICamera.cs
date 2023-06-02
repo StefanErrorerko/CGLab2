@@ -11,6 +11,6 @@ public interface ICameraProtocol
     public int HorizontalResolution { get; set; }
     public int VerticalResolution { get; set; }
     public Transverter Transverter { get; set; }
-    public Vector3 Origin { get; set; }
-    public Vector3[,] GetProjectionPlane();
+    public Point3 Origin { get; set; }
+    public Point3[,] GetProjectionPlane();
 }

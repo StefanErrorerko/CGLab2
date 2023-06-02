@@ -5,7 +5,7 @@ namespace RayCasting.Core.Tracer;
 
 public class Camera : ICameraProtocol
 {
-    public Camera(Vector3 origin, Vector3 direction, float distance, int fieldOfView, Transverter? transverter)
+    public Camera(Point3 origin, Vector3 direction, float distance, int fieldOfView, Transverter? transverter)
     {
         Origin = origin;
         Direction = direction;
@@ -20,14 +20,14 @@ public class Camera : ICameraProtocol
     public int HorizontalResolution { get; set; }
     public int VerticalResolution { get; set; }
     public Transverter Transverter { get; set; }
-    public Vector3 Origin { get; set; }
+    public Point3 Origin { get; set; }
 
-    public Vector3[,] GetProjectionPlane()
+    public Point3[,] GetProjectionPlane()
     {
         var rightAnchor = new Vector3(0, 0, 1).Cross(Direction).Normalized();
         var topAnchor = Direction.Cross(rightAnchor).Normalized();
 
-        var projectionPlane = new Vector3[HorizontalResolution, VerticalResolution];
+        var projectionPlane = new Point3[HorizontalResolution, VerticalResolution];
 
         float alpha = FieldOfView / 2;
         var leftOffset = (float)Math.Tan(Math.PI / 180 * alpha) * Distance;

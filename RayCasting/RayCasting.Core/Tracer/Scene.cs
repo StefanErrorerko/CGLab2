@@ -8,13 +8,13 @@ public class Scene
     //MARK: - Properties
 
     public List<IObject> Objects;
-    public Vector3 Light { get; set; }
+    public Point3 Light { get; set; }
 
     //MARK: - Initialization
 
-    public Scene(List<IObject> objects, Vector3 light)
+    public Scene(List<IObject> objects, Point3 light)
     {
         Objects = new List<IObject>(objects);
-        Light = light.Normalized();
+        Light = light;
     }
 }

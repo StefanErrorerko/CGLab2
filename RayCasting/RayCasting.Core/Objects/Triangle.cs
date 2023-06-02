@@ -65,7 +65,13 @@ public struct Triangle : IObject
 
         return t;
     }
-    
+
+    public Point3? GetIntersectionPointWith(Ray ray)
+    {
+        throw new NotImplementedException();
+    }
+
+
     public override string ToString()
     {
         return $"V1: ({V1.X}, {V1.Y}, {V1.Z})\n" +
