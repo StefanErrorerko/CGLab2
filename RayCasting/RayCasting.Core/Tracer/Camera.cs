@@ -4,9 +4,14 @@ namespace RayCasting.Core.Tracer;
 
 public class Camera : ICameraProtocol
 {
+    // Properties
+
     private readonly Vector3 _horizontal;
     private readonly Vector3 _lowerLeftCorner;
     private readonly Vector3 _vertical;
+
+    public Vector3 Origin { get; }
+
 
     // Initialization
     public Camera(Vector3 origin, Vector3 direction, Vector3 top, float fieldOfView,
@@ -30,10 +35,8 @@ public class Camera : ICameraProtocol
         _vertical = v * (focusDistance * viewPortHeight);
         _lowerLeftCorner = Origin - _horizontal / 2 - _vertical / 2 - w * focusDistance;
     }
-
-    // Properties
-    public Vector3 Origin { get; }
-
+    
+    
     // Public methods
     public Ray GetRay(float u, float v)
     {

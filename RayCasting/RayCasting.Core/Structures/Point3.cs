@@ -6,7 +6,8 @@ public struct Point3
     public float X { get; }
     public float Y { get; }
     public float Z { get; }
-
+    
+    
     // Constructor
     public Point3(float x, float y, float z)
     {

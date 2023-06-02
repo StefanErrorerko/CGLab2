@@ -1,8 +1,9 @@
 ﻿using RayCasting.Core.Objects;
+using RayCasting.Core.Structures;
 
 namespace RayCasting.Core.Tracer;
 
-public class RayTracer : IRayTracerProtocol
+public class RayTracer : IRayTracer
 {
     //MARK: - Initialization
 
@@ -59,7 +60,7 @@ public class RayTracer : IRayTracerProtocol
 
     //MARK: - Private methods
 
-    private (IObject Object, float T) GetClosestObject(IList<IObject> objects, Ray ray)
+    private (IObject? Object, float T) GetClosestObject(IList<IObject> objects, Ray ray)
     {
         IObject closestObject = null;
         float? closestT = null;
@@ -75,5 +76,25 @@ public class RayTracer : IRayTracerProtocol
         }
 
         return (Object: closestObject, T: closestT ?? -1);
+    }
+
+    private bool IsOnShadow(Point3 intersectionPoint)
+    {
+        var oppositeDirectionToLigthVector =
+            new Ray(new Vector3(new Point3(0, 0, 0), intersectionPoint), Scene.Light.Normalized());
+
+        var isOnShadow = false;
+        foreach (var sceneObject in Scene.Objects)
+        {
+            var overlapPoint = sceneObject.Intersects(oppositeDirectionToLigthVector);
+
+            if (overlapPoint is not null)
+            {
+                isOnShadow = true;
+                break;
+            }
+        }
+
+        return isOnShadow;
     }
 }

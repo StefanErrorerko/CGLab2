@@ -1,32 +1,20 @@
 ﻿using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
 
-namespace RayCasting.Core;
+namespace RayCasting.Core.Tracer;
 
 public class Scene
 {
     //MARK: - Properties
-    
-    private Vector3 _lightVector;
-    public List<IObject> Objects = new();
-    public Vector3 Light
-    {
-        get
-        {
-            return this._lightVector;
-        }
-        
-        set
-        {
-            this._lightVector = value.Normalized();
-        }
-    }
-    
+
+    public List<IObject> Objects;
+    public Vector3 Light { get; set; }
+
     //MARK: - Initialization
-    
+
     public Scene(List<IObject> objects, Vector3 light)
     {
-        this.Objects = objects;
-        this._lightVector = light.Normalized();
+        Objects = new List<IObject>(objects);
+        Light = light.Normalized();
     }
 }
