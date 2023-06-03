@@ -19,7 +19,7 @@ public struct Sphere : IObject
         return (Center - point).Normalized();
     }
 
-    public float? Intersects(Ray ray)
+    public (Point3? point, float? t) GetIntersectionWith(Ray ray)
     {
         Vector3 dir = ray.Direction;
         Vector3 s = ray.Origin - Center;
@@ -37,15 +37,12 @@ public struct Sphere : IObject
 
             if (t < 0)
             {
-                return null;
+                return (null, null);
             }
-            return t;
+            var intersectionPoint = ray.Origin + ray.Direction * t;
+            return (new Point3(intersectionPoint.X, intersectionPoint.Y, intersectionPoint.Z),
+                t);
         }
-        return null;
-    }
-
-    public Point3? GetIntersectionPointWith(Ray ray)
-    {
-        throw new NotImplementedException();
+        return (null, null);
     }
 }

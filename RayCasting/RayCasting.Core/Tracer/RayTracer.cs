@@ -136,17 +136,21 @@ public class RayTracer : IRayTracer
         var closestDistance = float.MaxValue;
         foreach (var intersectableObject in objects)
         {
-            var intersectionPoint = intersectableObject.GetIntersectionPointWith(ray);
+            var intersection = intersectableObject.GetIntersectionWith(ray);
+            var intersectionPoint = intersection.point;
 
             if (intersectionPoint is null) continue;
 
-            var disatanceToIntersection = Camera.Origin.GetDistanceTo(intersectionPoint.Value);
-
-            if (disatanceToIntersection < closestDistance)
+            if (intersection.t != null)
             {
-                closestDistance = disatanceToIntersection;
-                closestPoint = intersectionPoint;
-                closestObject = intersectableObject;
+                var disatanceToIntersection = intersection.t.Value;
+
+                if (disatanceToIntersection < closestDistance)
+                {
+                    closestDistance = disatanceToIntersection;
+                    closestPoint = intersectionPoint;
+                    closestObject = intersectableObject;
+                }
             }
         }
 
@@ -155,13 +159,13 @@ public class RayTracer : IRayTracer
 
     private bool IsInShadow(Point3 intersectionPoint)
     {
-        var oppositeDirectionToLigthVector =
+        var oppositeLightVector =
             new Ray(new Vector3(new Point3(0, 0, 0), intersectionPoint), new Vector3(Scene.Light).Normalized());
 
         var isOnShadow = false;
         foreach (var sceneObject in Scene.Objects)
         {
-            var overlapPoint = sceneObject.GetIntersectionPointWith(oppositeDirectionToLigthVector);
+            var overlapPoint = sceneObject.GetIntersectionWith(oppositeLightVector).point;
 
             if (overlapPoint is not null)
             {

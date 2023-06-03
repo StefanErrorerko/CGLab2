@@ -6,8 +6,7 @@ namespace RayCasting.Core.Objects;
 public interface IObject
 {
     Vector3 Normal(Vector3 vector3);
-    float? Intersects(Ray ray);
-    Point3? GetIntersectionPointWith(Ray ray);
+    (Point3? point, float? t) GetIntersectionWith(Ray ray);
     
     float Reflects(Vector3 lightRay, Vector3 surfacePoint)
     {
