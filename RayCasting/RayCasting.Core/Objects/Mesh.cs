@@ -1,9 +1,10 @@
 ﻿using RayCasting.Core.ObjLoader;
 using RayCasting.Core.Structures;
+using RayCasting.Core.Tracer;
 
 namespace RayCasting.Core.Objects;
 
-public class Mesh
+public class Mesh : IObject
 {
     public List<Vector3> Vertices;
     public List<Vector3> Normals;
@@ -17,7 +18,17 @@ public class Mesh
         TexCoords = texCoords;
         Faces = faces;
     }
-    
+
+    public float? Intersects(Ray ray)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Vector3 Normal(Vector3 point)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Print()
     {
         Console.WriteLine("Vertices:");

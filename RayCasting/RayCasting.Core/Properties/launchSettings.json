@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RayCasting.Core": {
+      "commandName": "Project",
+      "commandLineArgs": "source=cow.obj\r\noutput=rendered.ppm"
+    }
+  }
+}
