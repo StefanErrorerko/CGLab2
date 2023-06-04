@@ -30,8 +30,17 @@ var transverter = new Transverter();
 transverter.MoveX(-2);
 var camera = new Camera(origin, direction, distance: 1, fieldOfView: 30, transverter);
 var triangles = ObjReader.ReadToTriangles(fileData);
-var scene = new Scene(light: new Point3(x: 1, y: 1, z: 1));
+var scene = new Scene(light: new Point3(-2.0f, 1.0f, 1.5f));
+var objectTransverter = new Transverter();
+objectTransverter.RotateAngleZ(90);
+objectTransverter.RotateAngleX(-90);
+var transformedTriangles = new List<Triangle>();
 foreach(var triangle in triangles)
+{
+    transformedTriangles.Add(objectTransverter.ApplyTransformation(triangle));
+}
+
+foreach (var triangle in transformedTriangles)
 {
     scene.Objects.Add(triangle);
 }
@@ -57,11 +66,8 @@ for (int y = 0; y < height; y++)
     }
 }
 
-using FileStream stream = new FileStream(
-    Path.Combine(Path.GetDirectoryName(source), "NewCowShadow.ppm"), FileMode.Create);
 var imageWriter = new PpmWriter();
-imageWriter.Write(colors);
-stream.Flush();
+File.WriteAllBytes(@"C:/Users/chere/Downloads/NewCowShadow.ppm", imageWriter.Write(colors));
 Console.WriteLine("Finish");
 
 ConsolePresenter.Present(pixels);

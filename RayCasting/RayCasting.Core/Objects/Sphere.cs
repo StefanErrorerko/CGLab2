@@ -22,7 +22,7 @@ public struct Sphere : IObject
     public (Point3? point, float? t) GetIntersectionWith(Ray ray)
     {
         Vector3 dir = ray.Direction;
-        Vector3 s = ray.Origin - Center;
+        Vector3 s = new Vector3(ray.Origin) - Center;
         float a = dir.Dot(dir);
         float b = 2 * s.Dot(ray.Direction);
         float c = s.Dot(s) - (float)Math.Pow(Radius, 2);

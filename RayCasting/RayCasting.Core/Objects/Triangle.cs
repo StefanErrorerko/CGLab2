@@ -27,85 +27,85 @@ public struct Triangle : IObject
     
     public (Point3? point, float? t) GetIntersectionWith(Ray ray)
     {
-        const float epsilon = 0.000001f;
+        //const float epsilon = 0.000001f;
 
-        var vertex0 = new Vector3(V1);
-        var vertex1 = new Vector3(V2);
-        var vertex2 = new Vector3(V3);
+        //var vertex0 = new Vector3(V1);
+        //var vertex1 = new Vector3(V2);
+        //var vertex2 = new Vector3(V3);
 
-        var edge1 = vertex1 - vertex0;
-        var edge2 = vertex2 - vertex0;
+        //var edge1 = vertex1 - vertex0;
+        //var edge2 = vertex2 - vertex0;
 
-        var h = ray.Direction.Cross(edge2);
-        var a = edge1.Dot(h);
+        //var h = ray.Direction.Cross(edge2);
+        //var a = edge1.Dot(h);
 
-        if (Math.Abs(a) < epsilon) return (null, null);
+        //if (Math.Abs(a) < epsilon) return (null, null);
 
-        var f = 1.0f / a;
-        var s = ray.Origin - vertex0;
-        var u = f * s.Dot(h);
+        //var f = 1.0f / a;
+        //var s = ray.Origin - vertex0;
+        //var u = f * s.Dot(h);
 
-        if (u < 0.0f || u > 1.0f) return (null, null);
+        //if (u < 0.0f || u > 1.0f) return (null, null);
 
-        var q = s.Cross(edge1);
-        var v = f * ray.Direction.Dot(q);
+        //var q = s.Cross(edge1);
+        //var v = f * ray.Direction.Dot(q);
 
-        if (v < 0.0f || u + v > 1.0f) return (null, null);
+        //if (v < 0.0f || u + v > 1.0f) return (null, null);
 
-        var t = f * edge2.Dot(q);
+        //var t = f * edge2.Dot(q);
 
-        if (t > epsilon)
-        {
-            var intersectionPoint = ray.Origin + ray.Direction * t;
-            return (new Point3(intersectionPoint.X, intersectionPoint.Y, intersectionPoint.Z),
-                t);
-        }
-        return (null, null);
+        //if (t > epsilon)
+        //{
+        //    var intersectionPoint = ray.Origin + ray.Direction * t;
+        //    return (new Point3(intersectionPoint.X, intersectionPoint.Y, intersectionPoint.Z),
+        //        t);
+        //}
+        //return (null, null);
 
-        //Vector3 P1P2 = new Vector3(V1, V2);
-        //Vector3 P1P3 = new Vector3(V1, V3);
-        //Vector3 N = P1P2.Cross(P1P3);
+        Vector3 P1P2 = new Vector3(V1, V2);
+        Vector3 P1P3 = new Vector3(V1, V3);
+        Vector3 N = P1P2.Cross(P1P3);
 
-        //float NRayDirection = N.Dot(ray.Direction);
-        //if (Math.Abs(NRayDirection) < Single.Epsilon) // almost 0
-        //    return (null, null);
+        float NRayDirection = N.Dot(ray.Direction);
+        if (Math.Abs(NRayDirection) < Single.Epsilon) // almost 0
+            return (null, null);
 
-        //// compute d parameter using equation 2
-        //float d = -N.Dot(new Vector3(V1));
+        // compute d parameter using equation 2
+        float d = -N.Dot(new Vector3(V1));
 
-        //float t = -(N.Dot(ray.Origin) + d) / NRayDirection;
+        float t = -(N.Dot(new Vector3(ray.Origin)) + d) / NRayDirection;
 
-        //// check if the triangle is behind the ray
-        //if (t < 0)
-        //    return (null, null); // the triangle is behind
+        // check if the triangle is behind the ray
+        if (t < 0)
+            return (null, null); // the triangle is behind
 
-        //// compute the intersection point using equation 1
-        //Vector3 P = ray.PointAt(t);
+        // compute the intersection point using equation 1
+        Vector3 P = new Vector3(ray.PointAt(t));
 
-        //// Step 2: inside-outside test
-        //Vector3 C; // vector perpendicular to triangle's plane
+        // Step 2: inside-outside test
+        Vector3 C; // vector perpendicular to triangle's plane
 
-        //// edge 0
-        //Vector3 edge0 = new Vector3(V1, V2);
-        //Vector3 vp0 = P - new Vector3(V1);
-        //C = edge0.Cross(vp0);
-        //if (N.Dot(C) < 0)
-        //    return (null, null); // P is on the right side
+        // edge 0
+        Vector3 edge0 = new Vector3(V1, V2);
+        Vector3 vp0 = P - new Vector3(V1);
+        C = edge0.Cross(vp0);
+        if (N.Dot(C) < 0)
+            return (null, null); // P is on the right side
 
-        //// edge 1
-        //Vector3 edge1 = new Vector3(V2, V3);
-        //Vector3 vp1 = P - new Vector3(V2);
-        //C = edge1.Cross(vp1);
-        //if (N.Dot(C) < 0)
-        //    return (null, null); // P is on the right side
+        // edge 1
+        Vector3 edge1 = new Vector3(V2, V3);
+        Vector3 vp1 = P - new Vector3(V2);
+        C = edge1.Cross(vp1);
+        if (N.Dot(C) < 0)
+            return (null, null); // P is on the right side
 
-        //// edge 2
-        //Vector3 edge2 = new Vector3(V3, V1);
-        //Vector3 vp2 = P - new Vector3(V3);
-        //C = edge2.Cross(vp2);
-        //if (N.Dot(C) < 0)
-        //    return (null, null); // P is on the right side;
-        //return (new Point3(P.X, P.Y, P.Z), null);
+        // edge 2
+        Vector3 edge2 = new Vector3(V3, V1);
+        Vector3 vp2 = P - new Vector3(V3);
+        C = edge2.Cross(vp2);
+        if (N.Dot(C) < 0)
+            return (null, null); // P is on the right side;
+        return (new Point3(P.X, P.Y, P.Z), t);
     }
     
     public override string ToString()
