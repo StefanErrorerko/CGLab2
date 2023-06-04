@@ -62,46 +62,46 @@ public struct Triangle : IObject
         //}
         //return (null, null);
 
-        Vector3 P1P2 = new Vector3(V1, V2);
-        Vector3 P1P3 = new Vector3(V1, V3);
-        Vector3 N = P1P2.Cross(P1P3);
+        var v1v2 = new Vector3(V1, V2);
+        var v1v3 = new Vector3(V1, V3);
+        var N = v1v2.Cross(v1v3);
 
         float NRayDirection = N.Dot(ray.Direction);
-        if (Math.Abs(NRayDirection) < Single.Epsilon) // almost 0
+        if (Math.Abs(NRayDirection) < Single.Epsilon)
             return (null, null);
 
         // compute d parameter using equation 2
-        float d = -N.Dot(new Vector3(V1));
+        var d = -N.Dot(new Vector3(V1));
 
-        float t = -(N.Dot(new Vector3(ray.Origin)) + d) / NRayDirection;
+        var t = -(N.Dot(new Vector3(ray.Origin)) + d) / NRayDirection;
 
         // check if the triangle is behind the ray
         if (t < 0)
             return (null, null); // the triangle is behind
 
         // compute the intersection point using equation 1
-        Vector3 P = new Vector3(ray.PointAt(t));
+        var P = new Vector3(ray.PointAt(t));
 
         // Step 2: inside-outside test
         Vector3 C; // vector perpendicular to triangle's plane
 
         // edge 0
-        Vector3 edge0 = new Vector3(V1, V2);
-        Vector3 vp0 = P - new Vector3(V1);
+        var edge0 = new Vector3(V1, V2);
+        var vp0 = P - new Vector3(V1);
         C = edge0.Cross(vp0);
         if (N.Dot(C) < 0)
             return (null, null); // P is on the right side
 
         // edge 1
-        Vector3 edge1 = new Vector3(V2, V3);
-        Vector3 vp1 = P - new Vector3(V2);
+        var edge1 = new Vector3(V2, V3);
+        var vp1 = P - new Vector3(V2);
         C = edge1.Cross(vp1);
         if (N.Dot(C) < 0)
             return (null, null); // P is on the right side
 
         // edge 2
-        Vector3 edge2 = new Vector3(V3, V1);
-        Vector3 vp2 = P - new Vector3(V3);
+        var edge2 = new Vector3(V3, V1);
+        var vp2 = P - new Vector3(V3);
         C = edge2.Cross(vp2);
         if (N.Dot(C) < 0)
             return (null, null); // P is on the right side;
