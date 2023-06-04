@@ -9,7 +9,7 @@ public struct Triangle : IObject
     public Point3 V2 { get; }
     public Point3 V3 { get; }
 
-    private Vector3 _normal;
+    private readonly Vector3 _normal;
 
     public Triangle(Point3 p1, Point3 p2, Point3 p3)
     {
@@ -23,47 +23,44 @@ public struct Triangle : IObject
     {
         return _normal;
     }
-
-    public float? Intersects(Ray ray)
+    
+    public (Point3? point, float? t) GetIntersectionWith(Ray ray)
     {
         const float epsilon = 0.000001f;
 
-        // Calculate edge vectors
-        var e1 = V2 - V1;
-        var e2 = V3 - V1;
+        var vertex0 = new Vector3(V1);
+        var vertex1 = new Vector3(V2);
+        var vertex2 = new Vector3(V3);
 
-        // Calculate normal vector
-        var pvec = ray.Direction.Cross(e2);
-        var det = e1.Dot(pvec);
+        var edge1 = vertex1 - vertex0;
+        var edge2 = vertex2 - vertex0;
 
-        // Check if ray and triangle are parallel
-        if (MathF.Abs(det) < epsilon) return null;
+        var h = ray.Direction.Cross(edge2);
+        var a = edge1.Dot(h);
 
-        var invDet = 1f / det;
+        if (a > -epsilon && a < epsilon) return (null, null);
 
-        // Calculate distance from V1 to ray origin
-        var tvec = new Vector3(ray.Origin.X - V1.X, ray.Origin.Y - V1.Y, ray.Origin.Z - V1.Z);
+        var f = 1.0f / a;
+        var s = ray.Origin - vertex0;
+        var u = f * s.Dot(h);
 
-        // Calculate u parameter
-        var u = tvec.Dot(pvec) * invDet;
+        if (u < 0.0f || u > 1.0f) return (null, null);
 
-        // Check if u is outside the triangle
-        if (u < 0f || u > 1f) return null;
+        var q = s.Cross(edge1);
+        var v = f * ray.Direction.Dot(q);
 
-        // Calculate v parameter
-        var qvec = tvec.Cross(e1);
-        var v = ray.Direction.Dot(qvec) * invDet;
+        if (v < 0.0f || u + v > 1.0f) return (null, null);
 
-        // Check if v is outside the triangle
-        if (v < 0f || u + v > 1f) return null;
+        var t = f * edge2.Dot(q);
 
-        // Calculate distance from ray origin to intersection point
-        var t = e2.Dot(qvec) * invDet;
+        if (t > epsilon)
+        {
+            var intersectionPoint = ray.Origin + ray.Direction * t;
+            return (new Point3(intersectionPoint.X, intersectionPoint.Y, intersectionPoint.Z),
+                t);
+        }
 
-        // Check if intersection point is behind ray origin
-        if (t < epsilon) return null;
-
-        return t;
+        return (null, null);
     }
     
     public override string ToString()

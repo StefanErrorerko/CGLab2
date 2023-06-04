@@ -1,42 +1,56 @@
-﻿using RayCasting.Core.Structures;
+﻿using RayCasting.Core.Misc;
+using RayCasting.Core.Structures;
 
 namespace RayCasting.Core.Tracer;
 
 public class Camera : ICameraProtocol
 {
-    private readonly Vector3 _horizontal;
-    private readonly Vector3 _lowerLeftCorner;
-    private readonly Vector3 _vertical;
-
-    // Initialization
-    public Camera(Vector3 origin, Vector3 direction, Vector3 top, float fieldOfView,
-        (float width, float height) aspectRatio)
+    public Camera(Point3 origin, Vector3 direction, float distance, int fieldOfView, Transverter? transverter)
     {
         Origin = origin;
-        var direction1 = direction;
-
-        var tetha = fieldOfView * (float)Math.PI / 180;
-        var h = Math.Abs(MathF.Tan(tetha));
-        var viewPortHeight = 2.0f * h;
-        var viewPortWidth = aspectRatio.width / aspectRatio.height * viewPortHeight;
-
-        var w = (Origin - direction1).Normalized();
-        var u = top.Cross(w).Normalized();
-        var v = w.Cross(u);
-
-        var focusDistance = (Origin - direction1).Length;
-
-        _horizontal = u * (focusDistance * viewPortWidth);
-        _vertical = v * (focusDistance * viewPortHeight);
-        _lowerLeftCorner = Origin - _horizontal / 2 - _vertical / 2 - w * focusDistance;
+        Direction = direction;
+        FieldOfView = fieldOfView;
+        Distance = distance;
+        Transverter = transverter ?? new Transverter();
     }
 
-    // Properties
-    public Vector3 Origin { get; }
+    public Vector3 Direction { get; set; }
+    public float Distance { get; set; }
+    public int FieldOfView { get; set; }
+    public int HorizontalResolution { get; set; }
+    public int VerticalResolution { get; set; }
+    public Transverter Transverter { get; set; }
+    public Point3 Origin { get; set; }
 
-    // Public methods
-    public Ray GetRay(float u, float v)
+    public Point3[,] GetProjectionPlane()
     {
-        return new Ray(Origin, _lowerLeftCorner + _horizontal * u + _vertical * v - Origin);
+        var rightAnchor = new Vector3(0, 0, 1).Cross(Direction).Normalized();
+        var topAnchor = Direction.Cross(rightAnchor).Normalized();
+
+        var projectionPlane = new Point3[HorizontalResolution, VerticalResolution];
+
+        float alpha = FieldOfView / 2;
+        var leftOffset = (float)Math.Tan(Math.PI / 180 * alpha) * Distance;
+        var bottomOffset = leftOffset * (HorizontalResolution / (float)VerticalResolution);
+
+        var horizontalDistanceBetweenPixels = leftOffset / HorizontalResolution * 2;
+        var verticalDistanceBetweenPixels = bottomOffset / VerticalResolution * 2;
+
+        var localOrigin = Origin;
+
+        for (var x = 0; x < HorizontalResolution; x++)
+        {
+            for (var y = 0; y < VerticalResolution; y++)
+            {
+                projectionPlane[x, y] = localOrigin + Direction * Distance +
+                                        rightAnchor * (x * horizontalDistanceBetweenPixels) +
+                                        topAnchor * (y * verticalDistanceBetweenPixels);
+                projectionPlane[x, y] = Transverter.ApplyTransformation(projectionPlane[x, y]);
+            }
+        }
+
+        Origin = Transverter.ApplyTransformation(Origin);
+
+        return projectionPlane;
     }
 }

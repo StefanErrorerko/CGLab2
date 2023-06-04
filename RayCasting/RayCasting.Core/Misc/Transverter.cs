@@ -162,7 +162,7 @@ public class Transverter
             return new Triangle(ApplyTransformation(triangle.V1), ApplyTransformation(triangle.V2), ApplyTransformation(triangle.V3));
         }
 
-        public Vector3 ApplyTransformation(Vector3 vector)
+        public  Vector3 ApplyTransformation(Vector3 vector)
         {
             float[] vectorArray = { vector.X, vector.Y, vector.Z };
             float[] transformedVector = { 0, 0, 0 };

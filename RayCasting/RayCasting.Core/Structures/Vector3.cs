@@ -19,6 +19,9 @@ public struct Vector3
         Z = z;
     }
 
+    public Vector3(Point3 point) : this(new Point3(0, 0, 0), point)
+    {
+    }
     public Vector3(Point3 start, Point3 end)
     {
         X = end.X - start.X;
