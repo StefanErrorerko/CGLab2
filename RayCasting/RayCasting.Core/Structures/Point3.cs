@@ -30,8 +30,8 @@ public struct Point3
         return new Point3(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z);
     }
 
-    public static Vector3 operator -(Point3 lhs, Point3 rhs)
+    public static Point3 operator -(Point3 lhs, Vector3 rhs)
     {
-        return new Vector3(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
+        return new Point3(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using RayCasting.Core.Misc;
 using RayCasting.Core.Structures;
+using System.Drawing;
 
 namespace RayCasting.Core.Tracer;
 
 public class Camera : ICameraProtocol
 {
-    public Camera(Point3 origin, Vector3 direction, float distance, int fieldOfView, Transverter? transverter)
+    public Camera(Point3 origin, Vector3 direction, float distance, int fieldOfView, Transverter? transverter = null)
     {
         Origin = origin;
         Direction = direction;
@@ -17,8 +18,8 @@ public class Camera : ICameraProtocol
     public Vector3 Direction { get; set; }
     public float Distance { get; set; }
     public int FieldOfView { get; set; }
-    public int HorizontalResolution { get; set; }
-    public int VerticalResolution { get; set; }
+    public int HorizontalResolution { get; set; } = 200;
+    public int VerticalResolution { get; set; } = 200;
     public Transverter Transverter { get; set; }
     public Point3 Origin { get; set; }
 
@@ -36,7 +37,7 @@ public class Camera : ICameraProtocol
         var horizontalDistanceBetweenPixels = leftOffset / HorizontalResolution * 2;
         var verticalDistanceBetweenPixels = bottomOffset / VerticalResolution * 2;
 
-        var localOrigin = Origin;
+        var localOrigin = Origin - rightAnchor * leftOffset - topAnchor * bottomOffset;
 
         for (var x = 0; x < HorizontalResolution; x++)
         {

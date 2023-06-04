@@ -4,7 +4,7 @@ using RayCasting.Core.Tracer;
 
 namespace RayCasting.Core.Objects;
 
-public class Mesh : IObject
+public class Mesh
 {
     public List<Vector3> Vertices;
     public List<Vector3> Normals;

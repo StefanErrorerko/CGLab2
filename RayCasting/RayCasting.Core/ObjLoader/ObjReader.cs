@@ -102,25 +102,43 @@ public class ObjReader
 
                 case "f":
                     if (parts.Length < 4)
-                        throw new InvalidDataException("Invalid face line in OBJ file.");
-                    faceIndices.Add(parts[1]);
-                    faceIndices.Add(parts[2]);
-                    faceIndices.Add(parts[3]);
+                    throw new InvalidDataException("Invalid face line in OBJ file.");var pointIndexes = new List<int>();
+                    for (int i = 1; i < parts.Length; i++)
+                    {
+                        var indices = parts[i].Split('/');
+                        int pointIndex = int.Parse(indices[0]) - 1;
+                        int uvIndex = indices.Length > 1 && !string.IsNullOrEmpty(indices[1]) ? int.Parse(indices[1]) - 1 : -1;
+                        int normalIndex = indices.Length > 2 ? int.Parse(indices[2]) - 1 : -1;
+                        pointIndexes.Add(pointIndex);
+
+                        // if this is the third or later vertex in the face, create a triangle from it and the two previous vertices
+                        if (i >= 3)
+                        {
+                            triangles.Add(new Triangle(
+                                    vertices[pointIndexes[0]], 
+                                    vertices[pointIndexes[i - 2]], 
+                                    vertices[pointIndexes[i - 1]]));
+                        }
+                    }
+
+                    //faceIndices.Add(parts[1]);
+                    //faceIndices.Add(parts[2]);
+                    //faceIndices.Add(parts[3]);
                     break;
             }
         }
 
-        if (faceIndices.Count % 3 != 0)
-            throw new InvalidDataException("Invalid face indices count in OBJ file.");
+        //if (faceIndices.Count % 3 != 0)
+        //    throw new InvalidDataException("Invalid face indices count in OBJ file.");
 
-        for (var i = 0; i < faceIndices.Count; i += 3)
-        {
-            var index1 = int.Parse(faceIndices[i]) - 1;
-            var index2 = int.Parse(faceIndices[i + 1]) - 1;
-            var index3 = int.Parse(faceIndices[i + 2]) - 1;
+        //for (var i = 0; i < faceIndices.Count; i += 3)
+        //{
+        //    var index1 = int.Parse(faceIndices[i]) - 1;
+        //    var index2 = int.Parse(faceIndices[i + 1]) - 1;
+        //    var index3 = int.Parse(faceIndices[i + 2]) - 1;
 
-            triangles.Add(new Triangle(vertices[index1], vertices[index2], vertices[index3]));
-        }
+        //    triangles.Add(new Triangle(vertices[index1], vertices[index2], vertices[index3]));
+        //}
 
         return triangles;
     }

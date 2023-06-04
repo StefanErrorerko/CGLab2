@@ -41,6 +41,11 @@ public struct Vector3
         return X * other.X + Y * other.Y + Z * other.Z;
     }
 
+    public Point3 EndPoint()
+    {
+        return new Point3(X, Y, Z);
+    }
+
     public Vector3 Cross(Vector3 other)
     {
         var x = Y * other.Z - Z * other.Y;

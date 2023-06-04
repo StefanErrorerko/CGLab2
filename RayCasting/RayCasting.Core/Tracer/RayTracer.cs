@@ -1,4 +1,8 @@
-﻿using RayCasting.Core.Objects;
+﻿#define Light
+//#define MT
+#define Shadow
+
+using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
 
 namespace RayCasting.Core.Tracer;
@@ -61,7 +65,7 @@ public class RayTracer : IRayTracer
                 if (nearestIntersection.point is not null)
                 {
 #if Shadow
-                    var normal = nearestIntersection.figure.Normal(new Vector3(nearestIntersection.point.Value));
+                    var normal = nearestIntersection.figure!.Normal(new Vector3(nearestIntersection.point.Value));
 
                     float diffuse =
                         Math.Clamp(
@@ -88,22 +92,41 @@ public class RayTracer : IRayTracer
 #else
 
         for (var i = 0; i < projectionPlane.GetLength(0); i++)
-        for (var j = 0; j < projectionPlane.GetLength(1); j++)
         {
-            var castRay = new Ray(new Vector3(Camera.Origin), new Vector3(projectionPlane[i, j]));
+            for (var j = 0; j < projectionPlane.GetLength(1); j++)
+            {
+                var castRay = new Ray(new Vector3(Camera.Origin), new Vector3(projectionPlane[i, j]));
+                var nearestIntersection = GetNearestIntersection(Scene.Objects, castRay);
 
-            var nearestIntersection = GetNearestIntersection(Scene.Objects, castRay);
 #if Light
-                    if (nearestIntersection.point is not null)
-                    {
-                        var normal = nearestIntersection.figure!.GetNormalAtPoint((Point)nearestIntersection.point);
+                if (nearestIntersection.point is not null)
+                {
+#if Shadow
+                    var normal = nearestIntersection.figure!.Normal(new Vector3(nearestIntersection.point.Value));
 
-                        pixels[i, j] = Vector.Dot(normal, Scene.LightSource.ToVector());
-                    }
+                    float diffuse =
+                        Math.Clamp(
+                            normal.Dot(
+                                new Vector3(nearestIntersection.point.Value, Scene.Light).Normalized()), 0,
+                            1); //Vector.Dot(normal, Scene.LightSource.ToVector());
+                    var shadow = IsInShadow(nearestIntersection.point.Value + normal * (0.1f)) ? 0.5f : 1.0f;
+
+                    pixels[i, j] = diffuse * shadow;
 #else
-            pixels[i, j] = nearestIntersection.point is not null ? 1.0f : 0.0f;
+                    var normal = nearestIntersection.figure!.Normal(new Vector3(nearestIntersection.point.Value));
+
+                    pixels[i, j] =
+                        Math.Clamp(normal.Dot(new Vector3(Scene.Light)), 0,
+                            1); //Vector.Dot(normal, Scene.LightSource.ToVector());
+
 #endif
+                }
+#else
+                pixels[i, j] = nearestIntersection.point is not null ? 1.0f : 0.0f;
+#endif
+            }
         }
+        
 
 #endif
         return pixels;

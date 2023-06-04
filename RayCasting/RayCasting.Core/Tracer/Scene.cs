@@ -17,4 +17,10 @@ public class Scene
         Objects = new List<IObject>(objects);
         Light = light;
     }
+
+    public Scene(Point3 light)
+    {
+        Objects = new List<IObject>();
+        Light = light;
+    }
 }

@@ -6,13 +6,19 @@ public class ConsolePresenter
     {
         for (var i = 0; i < traceResult.GetLength(0); i++)
         {
-            for (var j = 0; j < traceResult.GetLength(1); j++)
+            for(int j = 0; j < traceResult.GetLength(1); j++)
             {
-                var c = ' ';
-                if (traceResult[i, j] > float.Epsilon) c = '#';
-                Console.Write(c);
+                var val = traceResult[i, j];
+                var filler = val switch
+                {
+                    var exp when val < 0 => "  ",
+                    var exp when (val >= 0 && val < 0.2) => ". ",
+                    var exp when (val >= 0.2 && val < 0.5) => "* ",
+                    var exp when (val >= 0.5 && val < 0.8) => "o ",
+                    _ => "# "
+                };
+                Console.Write(filler);
             }
-
             Console.WriteLine();
         }
     }

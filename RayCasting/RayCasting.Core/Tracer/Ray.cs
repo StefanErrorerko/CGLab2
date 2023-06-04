@@ -14,7 +14,7 @@ public struct Ray
     public Ray(Vector3 origin, Vector3 direction)
     {
         Origin = origin;
-        Direction = direction;
+        Direction = new Vector3(origin.EndPoint(), direction.EndPoint()).Normalized();
     }
 
     //MARK: - Public methods

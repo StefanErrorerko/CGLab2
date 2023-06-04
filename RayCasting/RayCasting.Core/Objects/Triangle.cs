@@ -1,5 +1,6 @@
 ﻿using RayCasting.Core.Structures;
 using RayCasting.Core.Tracer;
+using System.Drawing;
 
 namespace RayCasting.Core.Objects;
 
@@ -38,7 +39,7 @@ public struct Triangle : IObject
         var h = ray.Direction.Cross(edge2);
         var a = edge1.Dot(h);
 
-        if (a > -epsilon && a < epsilon) return (null, null);
+        if (Math.Abs(a) < epsilon) return (null, null);
 
         var f = 1.0f / a;
         var s = ray.Origin - vertex0;
@@ -59,8 +60,52 @@ public struct Triangle : IObject
             return (new Point3(intersectionPoint.X, intersectionPoint.Y, intersectionPoint.Z),
                 t);
         }
-
         return (null, null);
+
+        //Vector3 P1P2 = new Vector3(V1, V2);
+        //Vector3 P1P3 = new Vector3(V1, V3);
+        //Vector3 N = P1P2.Cross(P1P3);
+
+        //float NRayDirection = N.Dot(ray.Direction);
+        //if (Math.Abs(NRayDirection) < Single.Epsilon) // almost 0
+        //    return (null, null);
+
+        //// compute d parameter using equation 2
+        //float d = -N.Dot(new Vector3(V1));
+
+        //float t = -(N.Dot(ray.Origin) + d) / NRayDirection;
+
+        //// check if the triangle is behind the ray
+        //if (t < 0)
+        //    return (null, null); // the triangle is behind
+
+        //// compute the intersection point using equation 1
+        //Vector3 P = ray.PointAt(t);
+
+        //// Step 2: inside-outside test
+        //Vector3 C; // vector perpendicular to triangle's plane
+
+        //// edge 0
+        //Vector3 edge0 = new Vector3(V1, V2);
+        //Vector3 vp0 = P - new Vector3(V1);
+        //C = edge0.Cross(vp0);
+        //if (N.Dot(C) < 0)
+        //    return (null, null); // P is on the right side
+
+        //// edge 1
+        //Vector3 edge1 = new Vector3(V2, V3);
+        //Vector3 vp1 = P - new Vector3(V2);
+        //C = edge1.Cross(vp1);
+        //if (N.Dot(C) < 0)
+        //    return (null, null); // P is on the right side
+
+        //// edge 2
+        //Vector3 edge2 = new Vector3(V3, V1);
+        //Vector3 vp2 = P - new Vector3(V3);
+        //C = edge2.Cross(vp2);
+        //if (N.Dot(C) < 0)
+        //    return (null, null); // P is on the right side;
+        //return (new Point3(P.X, P.Y, P.Z), null);
     }
     
     public override string ToString()
