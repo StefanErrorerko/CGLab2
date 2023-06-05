@@ -1,6 +1,6 @@
-﻿using RayCasting.Core.Structures;
+﻿using RayCasting.Core.BoundingVolumeHierarchies;
+using RayCasting.Core.Structures;
 using RayCasting.Core.Tracer;
-using System.Drawing;
 
 namespace RayCasting.Core.Objects;
 
@@ -106,6 +106,29 @@ public struct Triangle : IObject
         if (N.Dot(C) < 0)
             return (null, null); // P is on the right side;
         return (new Point3(P.X, P.Y, P.Z), t);
+    }
+
+    public BoundingBox GetBoundingBox()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Intersects(Ray ray, out double d)
+    {
+        throw new NotImplementedException();
+    }
+
+    private BoundingBox CalculateBoundingBox( int start, int end)
+    {
+        float minX = Math.Min(V1.X, Math.Min(V2.X, V3.X));
+        float minY = Math.Min(V1.Y, Math.Min(V2.Y, V3.Y));
+        float minZ = Math.Min(V1.Z, Math.Min(V2.Z, V3.Z));
+        
+        float maxX = Math.Max(V1.X, Math.Max(V2.X, V3.X));
+        float maxY = Math.Max(V1.Y, Math.Max(V2.Y, V3.Y));
+        float maxZ = Math.Max(V1.Z, Math.Max(V2.Z, V3.Z));
+        
+        return new BoundingBox(new Point3(minX, minY, minZ), new Point3(maxX, maxY, maxZ));
     }
     
     public override string ToString()

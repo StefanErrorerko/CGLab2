@@ -54,6 +54,9 @@ public struct Vector3
         return new Vector3(x, y, z);
     }
 
+    public static Vector3 Min(Vector3 a, Vector3 b) => new Vector3(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y), Math.Min(a.Z, b.Z));
+    public static Vector3 Max(Vector3 a, Vector3 b) => new Vector3(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y), Math.Max(a.Z, b.Z));
+
     // Operators
     public static Vector3 operator +(Vector3 lhs, Vector3 rhs)
     {
@@ -73,5 +76,19 @@ public struct Vector3
     public static Vector3 operator /(Vector3 lhs, float rhs)
     {
         return new Vector3(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs);
+    }
+    
+    public float this[int index]
+    {
+        get
+        {
+            return index switch
+            {
+                0 => X,
+                1 => Y,
+                2 => Z,
+                _ => throw new IndexOutOfRangeException("Vector3Indexer index out of range.")
+            };
+        }
     }
 }

@@ -1,3 +1,4 @@
+using RayCasting.Core.BoundingVolumeHierarchies;
 using RayCasting.Core.Structures;
 using RayCasting.Core.Tracer;
 
@@ -44,5 +45,15 @@ public struct Sphere : IObject
                 t);
         }
         return (null, null);
+    }
+
+    public BoundingBox GetBoundingBox()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Intersects(Ray ray, out double d)
+    {
+        throw new NotImplementedException();
     }
 }
