@@ -16,8 +16,9 @@ var parser = new CommandLineParser(args);
 
 var source = parser.GetArgument(sourceFlag);
 var output = parser.GetArgument(outputFlag);
+output = parser.ExpandPath(source, output);
 
-source = @"/Users/chere/Downloads/cow.obj";
+//source = @"/Users/chere/Downloads/cow.obj";
 var fileData = File.ReadAllLines(source);
 
 //Mesh mesh = ObjReader.ReadToMesh(fileData);
@@ -47,10 +48,10 @@ foreach (var triangle in triangles)
 }
 
 var scene = new Scene(light: new Point3(5.5f, 1f, 2f));
-foreach (var triangle in transformedTriangles)
-{
-    scene.Objects.Add(triangle);
-}
+//foreach (var triangle in transformedTriangles)
+//{
+//    scene.Objects.Add(triangle);
+//}
 scene.Objects.Add(new Sphere(new Vector3(9.2f, 0.6f, 0.7f), 0.25f));
 scene.Objects.Add(new Disk(new Vector3(9.2f, 0.6f, 0.5f), new Vector3(-1, 0, 0), 0.4f));
 scene.Objects.Add(new Triangle(new Point3(9.0f, 1, -1), new Point3(9.1f, 0.7f, -0.7f), new Point3(9.4f, 0.6f, -0.7f)));
@@ -62,7 +63,7 @@ var colors = TraceResultConverter.ConvertToGrayscalePixels(pixels);
 ConsolePresenter.Present(pixels);
 
 var imageWriter = new PpmWriter();
-File.WriteAllBytes(@"C:/Users/chere/Downloads/NewCowShadow.ppm", imageWriter.Write(colors));
+File.WriteAllBytes(output, imageWriter.Write(colors));
 
 Console.ReadLine();
 

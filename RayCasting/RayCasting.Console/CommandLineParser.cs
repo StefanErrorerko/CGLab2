@@ -27,6 +27,11 @@ internal class CommandLineParser
         return value;
     }
 
+    public string ExpandPath(string sourceDir, string goalPath)
+    {
+        return Path.Combine(Path.GetDirectoryName(sourceDir), goalPath);
+    }
+
     public bool HasArgument(string key)
     {
         return _arguments.ContainsKey(key);

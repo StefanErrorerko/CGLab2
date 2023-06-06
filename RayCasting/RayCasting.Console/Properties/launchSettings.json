@@ -2,7 +2,7 @@
   "profiles": {
     "RayCasting.Console": {
       "commandName": "Project",
-      "commandLineArgs": "source=cow.obj\r\noutput=rendered.ppm"
+      "commandLineArgs": "source=C:/Users/chere/Downloads/cow.obj\r\noutput=rendered.ppm"
     }
   }
 }
