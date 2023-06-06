@@ -1,12 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayCasting.Core", "RayCasting.Core\RayCasting.Core.csproj", "{962BD166-4ABD-49C3-AC29-EB89B0F863EA}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCasting.Console", "RayCasting.Console\RayCasting.Console.csproj", "{3B984635-8984-4765-B7A3-F86E906FA574}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayCasting.Console", "RayCasting.Console\RayCasting.Console.csproj", "{3B984635-8984-4765-B7A3-F86E906FA574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presenter", "Presenter\Presenter.csproj", "{3606EC84-EDA0-4875-8BA1-D2E9FD0AD349}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presenter", "Presenter\Presenter.csproj", "{3606EC84-EDA0-4875-8BA1-D2E9FD0AD349}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PPMWriter", "PPMWriter\PPMWriter.csproj", "{4913A315-915D-4ADF-A927-CD24EB991891}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPMWriter", "PPMWriter\PPMWriter.csproj", "{4913A315-915D-4ADF-A927-CD24EB991891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCasting.Core", "RayCasting.Core\RayCasting.Core.csproj", "{97F15C80-2BB7-4342-94F7-E879072C5FEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayCasting.Test", "RayCasting.Test\RayCasting.Test.csproj", "{432D68BB-855A-404A-B140-DA0913FE57F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{962BD166-4ABD-49C3-AC29-EB89B0F863EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{962BD166-4ABD-49C3-AC29-EB89B0F863EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{962BD166-4ABD-49C3-AC29-EB89B0F863EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{962BD166-4ABD-49C3-AC29-EB89B0F863EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B984635-8984-4765-B7A3-F86E906FA574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B984635-8984-4765-B7A3-F86E906FA574}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B984635-8984-4765-B7A3-F86E906FA574}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,5 +31,19 @@ Global
 		{4913A315-915D-4ADF-A927-CD24EB991891}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4913A315-915D-4ADF-A927-CD24EB991891}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4913A315-915D-4ADF-A927-CD24EB991891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97F15C80-2BB7-4342-94F7-E879072C5FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97F15C80-2BB7-4342-94F7-E879072C5FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97F15C80-2BB7-4342-94F7-E879072C5FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97F15C80-2BB7-4342-94F7-E879072C5FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432D68BB-855A-404A-B140-DA0913FE57F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432D68BB-855A-404A-B140-DA0913FE57F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432D68BB-855A-404A-B140-DA0913FE57F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432D68BB-855A-404A-B140-DA0913FE57F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6328C6D8-EE23-4A6C-8D17-499C97B779DB}
 	EndGlobalSection
 EndGlobal
