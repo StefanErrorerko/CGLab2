@@ -6,21 +6,18 @@ public class TraceResultConverter
 {
     public static Color[,] ConvertToGrayscalePixels(float[,] traceResult)
     {
-        var width = traceResult.GetLength(0);
-        var height = traceResult.GetLength(1);
-        var pixels = new Color[width, height];
+        var width = traceResult.GetLength(1);
+        var height = traceResult.GetLength(0);
+        var colors = new Color[width, height];
 
-        var maxIntensity = 1.0f;
-
-        for (var i = 0; i < width; i++)
-        for (var j = 0; j < height; j++)
+        for (int y = 0; y < height; y++)
         {
-            var intensity = traceResult[i, j] / maxIntensity;
-            var grayscaleValue = (byte)(intensity * 255);
-            var color = Color.FromArgb(grayscaleValue, grayscaleValue, grayscaleValue);
-            pixels[i, j] = color;
+            for (int x = 0; x < width; x++)
+            {
+                byte greyscale = (byte)(traceResult[y, x] * 255.0f);
+                colors[x, y] = Color.FromArgb(greyscale, greyscale, greyscale);
+            }
         }
-
-        return pixels;
+        return colors;
     }
 }
