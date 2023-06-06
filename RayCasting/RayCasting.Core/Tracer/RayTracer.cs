@@ -1,21 +1,20 @@
 ﻿using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
-using System.Drawing;
 
 namespace RayCasting.Core.Tracer;
 
 public class RayTracer : IRayTracer
 {
+    //MARK: - Properties
+    private ICameraProtocol Camera { get; }
+    private Scene Scene { get; }
+    
     //MARK: - Initialization
     public RayTracer(ICameraProtocol camera, Scene scene)
     {
         Camera = camera;
         Scene = scene;
     }
-    //MARK: - Properties
-
-    private ICameraProtocol Camera { get; }
-    private Scene Scene { get; }
 
     //MARK: - Public methods
 
@@ -34,7 +33,7 @@ public class RayTracer : IRayTracer
                     {
                         var normal = nearestIntersection.figure!.Normal(new Vector3((Point3)nearestIntersection.point));
                         var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
-                        float diffuse = Math.Clamp(val, 0, 1); //Vector.Dot(normal, Scene.LightSource.ToVector());
+                        float diffuse = Math.Clamp(val, 0, 1);
                         float shadow = IsInShadow((Point3) nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
 
                         pixels[i, j] = diffuse * shadow;
@@ -45,24 +44,6 @@ public class RayTracer : IRayTracer
     }
 
     //MARK: - Private methods
-
-    // private (IObject? Object, float? T) GetClosestObject(IList<IObject> objects, Ray ray)
-    // {
-    //     IObject closestObject = null;
-    //     float? closestT = null;
-    //
-    //     foreach (var obj in objects)
-    //     {
-    //         var t = obj.Intersects(ray);
-    //         if (t.HasValue && (closestT == null || t < closestT))
-    //         {
-    //             closestObject = obj;
-    //             closestT = t;
-    //         }
-    //     }
-    //
-    //     return (Object: closestObject, T: closestT);
-    // }
 
     public (IObject? figure, Point3? point) GetNearestIntersection(List<IObject> objects, Ray ray)
     {
