@@ -48,4 +48,9 @@ public struct Point3
             };
         }
     }
+    
+    public float MagnitudeSquared()
+    {
+        return X * X + Y * Y + Z * Z;
+    }
 }

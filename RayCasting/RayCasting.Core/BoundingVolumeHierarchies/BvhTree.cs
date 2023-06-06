@@ -6,7 +6,7 @@ namespace RayCasting.Core.BoundingVolumeHierarchies;
 public class BvhTree
 {
     // Recursive function to build the BVH tree
-    public BvhNode Build(List<Triangle> triangles, int start, int end)
+    public BvhNode? Build(List<Triangle> triangles, int start, int end)
     {
         // Base case: If there are no triangles, return null
         if (start > end)
@@ -22,8 +22,8 @@ public class BvhTree
         if (end - start <= 3)
         {
             // Store the triangle indices in the leaf node
-            node.TriangleIndices = new List<int>();
-            for (var i = start; i <= end; i++) node.TriangleIndices.Add(i);
+            // node.TriangleIndices = new List<int>();
+            // for (var i = start; i <= end; i++) node.TriangleIndices.Add(i);
         }
         else
         {
@@ -57,8 +57,8 @@ public class BvhTree
     // Calculate the bounding box for a set of triangles
     private BoundingBox CalculateBoundingBox(List<Triangle> triangles, int start, int end)
     {
-        var min = new Point3(float.MaxValue, float.MaxValue, float.MaxValue);
-        var max = new Point3(float.MinValue, float.MinValue, float.MinValue);
+        var min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        var max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         for (var i = start; i <= end; i++)
         {

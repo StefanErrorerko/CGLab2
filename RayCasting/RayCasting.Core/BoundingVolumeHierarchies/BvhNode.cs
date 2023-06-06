@@ -8,14 +8,14 @@ public class BvhNode
     public BvhNode LeftChild;
     public List<IObject> Primitives;
     public BvhNode RightChild;
-    public List<int> TriangleIndices;
+    // public List<int> TriangleIndices;
 
-    public BvhNode(BoundingBox boundingBox, BvhNode leftChild, BvhNode rightChild, List<int> triangleIndices)
+    public BvhNode(BoundingBox boundingBox, BvhNode leftChild=null, BvhNode rightChild=null, List<IObject> primitives=null)
     {
         BoundingBox = boundingBox;
         LeftChild = leftChild;
         RightChild = rightChild;
-        TriangleIndices = triangleIndices;
+        Primitives = primitives;
     }
 
     public BvhNode()

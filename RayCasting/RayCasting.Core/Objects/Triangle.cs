@@ -113,12 +113,12 @@ public struct Triangle : IObject
         throw new NotImplementedException();
     }
 
-    public bool Intersects(Ray ray, out double d)
+    public bool Intersects(Ray ray)
     {
         throw new NotImplementedException();
     }
 
-    private BoundingBox CalculateBoundingBox( int start, int end)
+    private BoundingBox CalculateBoundingBox(int start, int end)
     {
         float minX = Math.Min(V1.X, Math.Min(V2.X, V3.X));
         float minY = Math.Min(V1.Y, Math.Min(V2.Y, V3.Y));
@@ -128,7 +128,7 @@ public struct Triangle : IObject
         float maxY = Math.Max(V1.Y, Math.Max(V2.Y, V3.Y));
         float maxZ = Math.Max(V1.Z, Math.Max(V2.Z, V3.Z));
         
-        return new BoundingBox(new Point3(minX, minY, minZ), new Point3(maxX, maxY, maxZ));
+        return new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
     }
     
     public override string ToString()

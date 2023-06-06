@@ -46,7 +46,7 @@ public struct Disk : IObject
         throw new NotImplementedException();
     }
 
-    public bool Intersects(Ray ray, out double d)
+    public bool Intersects(Ray ray)
     {
         throw new NotImplementedException();
     }

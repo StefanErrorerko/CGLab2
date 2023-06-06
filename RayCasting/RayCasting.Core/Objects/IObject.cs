@@ -14,5 +14,5 @@ public interface IObject
         return Normal(surfacePoint).Dot(lightRay);
     }
 
-    bool Intersects(Ray ray, out double d);
+    bool Intersects(Ray ray);
 }

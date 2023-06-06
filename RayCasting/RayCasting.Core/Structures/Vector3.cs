@@ -3,9 +3,9 @@
 public struct Vector3
 {
     // Properties
-    public float X { get; }
-    public float Y { get; }
-    public float Z { get; }
+    public float X { get; set; }
+    public float Y { get; set; }
+    public float Z { get; set; }
 
     public float Length => (float)Math.Sqrt(X * X + Y * Y + Z * Z);
 
@@ -91,4 +91,10 @@ public struct Vector3
             };
         }
     }
+    
+    public float MagnitudeSquared()
+    {
+        return X * X + Y * Y + Z * Z;
+    }
+
 }
