@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presenter", "Presenter\Pres
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPMWriter", "PPMWriter\PPMWriter.csproj", "{4913A315-915D-4ADF-A927-CD24EB991891}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIContainer", "DIContainer\DIContainer.csproj", "{7826D846-62E7-4EA7-A417-B4E3A3359012}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{4913A315-915D-4ADF-A927-CD24EB991891}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4913A315-915D-4ADF-A927-CD24EB991891}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4913A315-915D-4ADF-A927-CD24EB991891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7826D846-62E7-4EA7-A417-B4E3A3359012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7826D846-62E7-4EA7-A417-B4E3A3359012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7826D846-62E7-4EA7-A417-B4E3A3359012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7826D846-62E7-4EA7-A417-B4E3A3359012}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

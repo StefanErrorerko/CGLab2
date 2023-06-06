@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DIContainer\DIContainer.csproj" />
       <ProjectReference Include="..\PPMWriter\PPMWriter.csproj" />
       <ProjectReference Include="..\RayCasting.Core\RayCasting.Core.csproj" />
     </ItemGroup>
