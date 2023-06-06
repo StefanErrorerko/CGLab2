@@ -9,7 +9,7 @@ public class BvhAccel
     public BvhNode Root { get; }
     public BoundingBox BoundingBox => Root.BoundingBox;
 
-    public BvhAccel(List<IObject>? primitives, int maxLeafSize)
+    public BvhAccel(List<IObject> primitives, int maxLeafSize)
     {
         Root = ConstructBvh(primitives, maxLeafSize);
     }
@@ -56,7 +56,7 @@ public class BvhAccel
     //     return node;
     // }
 
-    BvhNode ConstructBvh(List<IObject>? primitives, int maxLeafSize)
+    BvhNode ConstructBvh(List<IObject> primitives, int maxLeafSize)
     {
         BoundingBox centroidBox = new BoundingBox();
         BoundingBox bbox = new BoundingBox();
@@ -71,7 +71,7 @@ public class BvhAccel
 
         BvhNode? node = new BvhNode(bbox)
         {
-            Primitives = primitives
+            Primitives = new List<IObject>(primitives)
         };
 
         if (primitives.Count <= maxLeafSize)

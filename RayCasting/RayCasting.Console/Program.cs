@@ -32,25 +32,30 @@ var camera = new Camera(
     fieldOfView: 60,
     transverter);
 
-var triangles = ObjReader.ReadToTriangles(fileData);
+ var triangles = ObjReader.ReadToTriangles(fileData);
+var singleTriangle = new Triangle(new Point3(10, 0, 0), new Point3(3, 0.5f, 2.8f), new Point3(3, -2.5f, -0.5f));
+// var triangles = new List<Triangle>
+// {
+//     new Triangle(new Point3(3, 0, 0), new Point3(3, 0.5f, 2.8f), new Point3(3, -2.5f, -0.5f))
+// };
 
 var objectTransverter = new Transverter();
-objectTransverter.RotateAngleZ(75);
-objectTransverter.RotateAngleX(-75);
-var transformedTriangles = new List<Triangle>();
-foreach(var triangle in triangles)
-{
-    transformedTriangles.Add(objectTransverter.ApplyTransformation(triangle));
-}
+// objectTransverter.RotateAngleZ(75);
+// objectTransverter.RotateAngleX(-75);
+// var transformedTriangles = new List<Triangle>();
+// foreach(var triangle in triangles)
+// {
+//     transformedTriangles.Add(objectTransverter.ApplyTransformation(triangle));
+// }
 
-var scene = new BvhScene(light: new Point3(-1.5f, 1.0f, 2f));
-foreach (var triangle in transformedTriangles)
+var scene = new BvhScene(light: new Point3(5.5f, 1.0f, 2f));
+foreach (var triangle in triangles)
 {
     scene.Objects.Add(triangle);
 }
 var disk = new Disk(new Vector3(0, 0, 1), new Vector3(0, 0, -0.5f), 50);
-var sphere = new Sphere(center: new Vector3(x: 0, y: 0, z: 4), radius: 100);        
-scene.Objects.Add(sphere);
+// var sphere = new Sphere(center: new Vector3(x: 0, y: 0, z: 4), radius: 100);        
+// scene.Objects.Add(sphere);
 
 var rayTracer = new BvhRayTracer(camera, scene);
 var pixels = rayTracer.Trace();
@@ -80,13 +85,7 @@ Console.WriteLine("Finish");
 
 ConsolePresenter.Present(pixels);
 
-Console.ReadLine();
+//Console.ReadLine();
 
 
-// var triangles = new List<Triangle>
-// {
-//     new(new Point3(0, 0, 0), new Point3(1, 0, 0), new Point3(0, 1, 0)),
-//     new(new Point3(1, 0, 0), new Point3(1, 1, 0), new Point3(0, 1, 0)),
-//     new(new Point3(0, 0, 1), new Point3(1, 0, 1), new Point3(0, 1, 1)),
-//     new(new Point3(1, 0, 1), new Point3(1, 1, 1), new Point3(0, 1, 1))
-// };
+

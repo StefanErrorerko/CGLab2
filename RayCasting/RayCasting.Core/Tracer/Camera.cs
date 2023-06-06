@@ -18,8 +18,8 @@ public class Camera : ICameraProtocol
     public Vector3 Direction { get; set; }
     public float Distance { get; set; }
     public int FieldOfView { get; set; }
-    public int HorizontalResolution { get; set; } = 200;
-    public int VerticalResolution { get; set; } = 200;
+    public int HorizontalResolution { get; set; } = 500;
+    public int VerticalResolution { get; set; } = 500;
     public Transverter Transverter { get; set; }
     public Point3 Origin { get; set; }
 

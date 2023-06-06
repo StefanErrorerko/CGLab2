@@ -24,7 +24,7 @@ public struct Triangle : IObject
     {
         return _normal;
     }
-    
+
     public (Point3? point, float? t) GetIntersectionWith(Ray ray)
     {
         //const float epsilon = 0.000001f;
@@ -110,12 +110,34 @@ public struct Triangle : IObject
 
     public BoundingBox GetBoundingBox()
     {
-        throw new NotImplementedException();
+        // var min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        // var max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+        //
+        // min.X = Math.Min(min.X, Math.Min(V1.X, Math.Min(V2.X, V3.X)));
+        // min.Y = Math.Min(min.Y, Math.Min(V1.Y, Math.Min(V2.Y, V3.Y)));
+        // min.Z = Math.Min(min.Z, Math.Min(V1.Z, Math.Min(V2.Z, V3.Z)));
+        // max.X = Math.Max(max.X, Math.Max(V1.X, Math.Max(V2.X, V3.X)));
+        // max.Y = Math.Max(max.Y, Math.Max(V1.Y, Math.Max(V2.Y, V3.Y)));
+        // max.Z = Math.Max(max.Z, Math.Max(V1.Z, Math.Max(V2.Z, V3.Z)));
+        //
+        // return new BoundingBox(min, max);
+        
+        Vector3 p1 = new Vector3(V1);
+        Vector3 p2 = new Vector3(V2);
+        Vector3 p3 = new Vector3(V3);
+  
+        BoundingBox bb = new BoundingBox(p1);
+        bb.Expand(p2);
+        bb.Expand(p3);
+  
+        return bb;
     }
 
     public bool Intersects(Ray ray)
     {
-        throw new NotImplementedException();
+        var intersection = GetIntersectionWith(ray);
+        
+        return intersection.point != null && intersection.t != null;
     }
 
     private BoundingBox CalculateBoundingBox(int start, int end)
@@ -123,14 +145,14 @@ public struct Triangle : IObject
         float minX = Math.Min(V1.X, Math.Min(V2.X, V3.X));
         float minY = Math.Min(V1.Y, Math.Min(V2.Y, V3.Y));
         float minZ = Math.Min(V1.Z, Math.Min(V2.Z, V3.Z));
-        
+
         float maxX = Math.Max(V1.X, Math.Max(V2.X, V3.X));
         float maxY = Math.Max(V1.Y, Math.Max(V2.Y, V3.Y));
         float maxZ = Math.Max(V1.Z, Math.Max(V2.Z, V3.Z));
-        
+
         return new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
     }
-    
+
     public override string ToString()
     {
         return $"V1: ({V1.X}, {V1.Y}, {V1.Z})\n" +

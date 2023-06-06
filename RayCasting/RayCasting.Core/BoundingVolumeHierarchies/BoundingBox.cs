@@ -20,6 +20,10 @@ public struct BoundingBox
         Extent = Max - Min;
     }
 
+    public BoundingBox(Vector3 p) : this(p, p)
+    {
+    }
+
     public bool Intersect(Ray ray, out float tMin)
     {
         tMin = 0.0f;
@@ -75,6 +79,8 @@ public struct BoundingBox
         Max.X = Math.Max(Max.X, otherBox.Max.X);
         Max.Y = Math.Max(Max.Y, otherBox.Max.Y);
         Max.Z = Math.Max(Max.Z, otherBox.Max.Z);
+
+        Extent = Max - Min;
     }
 
     public void Expand(Vector3 vector)
@@ -174,8 +180,8 @@ public struct BoundingBox
         return t0 <= t1;
     }
 
-    private void Swap(ref float a, ref float b)
-    {
-        (a, b) = (b, a);
-    }
+    // private void Swap(ref float a, ref float b)
+    // {
+    //     (a, b) = (b, a);
+    // }
 }

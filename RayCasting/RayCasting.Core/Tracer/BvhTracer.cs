@@ -12,11 +12,13 @@ public class BvhRayTracer : IRayTracer
     {
         Camera = camera;
         Scene = scene;
+        BuildAccel();
     }
 
     //MARK: - Properties
     private ICameraProtocol Camera { get; }
     private BvhScene Scene { get; }
+    private BvhAccel _bvhAccel;
 
     //MARK: - Public methods
     public float[,] Trace()
@@ -29,7 +31,7 @@ public class BvhRayTracer : IRayTracer
             for (int j = 0; j < projectionPlane.GetLength(1); j++)
             {
                 var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
-                var nearestIntersection = GetNearestIntersection(Scene.Bvh, currentRay);
+                var nearestIntersection = GetNearestIntersection(_bvhAccel.Root, currentRay);
                 if (nearestIntersection.point is not null)
                 {
                     var normal = nearestIntersection.figure!.Normal(new Vector3((Point3)nearestIntersection.point));
@@ -52,6 +54,7 @@ public class BvhRayTracer : IRayTracer
         {
             return (null, null);
         }
+
 
         if (node.IsLeafNode())
         {
@@ -107,7 +110,7 @@ public class BvhRayTracer : IRayTracer
     {
         var oppositeLightVector = new Ray(intersectionPoint, new Vector3(Scene.Light).Normalized());
 
-        foreach (var sceneObject in Scene.Bvh.Primitives)
+        foreach (var sceneObject in _bvhAccel.Root.Primitives)
         {
             var overlapPoint = sceneObject.GetIntersectionWith(oppositeLightVector).point;
             if (overlapPoint is not null)
@@ -117,5 +120,11 @@ public class BvhRayTracer : IRayTracer
         }
 
         return false;
+    }
+
+    private void BuildAccel()
+    {
+        var primitives = new List<IObject>(Scene.Objects);
+        _bvhAccel = new BvhAccel(primitives, 100);
     }
 }
