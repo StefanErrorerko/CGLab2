@@ -1,14 +1,16 @@
+using System.Drawing;
+
 namespace ImageWriter;
 
 public class ConsolePresenter
 {
-    public static void Present(float[,] traceResult)
+    public static void Present(Color[,] traceResult)
     {
         for (var i = 0; i < traceResult.GetLength(0); i++)
         {
             for(int j = 0; j < traceResult.GetLength(1); j++)
             {
-                var val = traceResult[i, j];
+                var val = traceResult[i, j].ToArgb(); // ×È ÁÓÄÅ ÒÓÒ Â²Ä 0 ÄÎ 1 ÇÍÀ×ÅÍÍß???
                 var filler = val switch
                 {
                     var exp when val < 0 => "  ",

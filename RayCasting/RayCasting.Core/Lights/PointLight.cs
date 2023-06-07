@@ -24,36 +24,34 @@ namespace RayCasting.Core.Lights
 
         public override Color GetPixel(Point3 point, IObject figure, List<IObject> objects)
         {
+            var lightDirection = new Vector3(point - _position).Normalized();
+            var lightRay = new Ray(point, _position);
 
-            var intersectionPoint = intersection.Point;
-            var lightDirection = (intersectionPoint - _position).Normalized;
-            var lightRay = new Ray(intersectionPoint, _position);
-
-            if (HasIntersectionWithAnyObject(lightRay, sceneObjects, intersection.Object))
+            if (HasIntersectionWithAnyObject(lightRay, objects, figure))
             {
                 return Color.Black;
             }
 
-            var intersectionVectorNormalized = intersection.Object.GetNormalAt(intersectionPoint);
-            var lightCoefficient = (-lightDirection).DotProduct(intersectionVectorNormalized);
-            lightCoefficient = Math.Max(lightCoefficient, 0);
-            lightCoefficient *= _intensity;
+            var intersectionVector = figure.Normal(new Vector3(point));
+            var coeff = (lightDirection * (-1.0f)).Dot(intersectionVector);
+            coeff = Math.Max(coeff, 0) * _intensity;
 
-            return Color.FromShadowedColor(lightCoefficient, _color);
+            return Color.FromArgb(
+                _color.A,
+                (byte)Math.Round(_color.R * coeff, MidpointRounding.AwayFromZero),
+                (byte)Math.Round(_color.G * coeff, MidpointRounding.AwayFromZero),
+                (byte)Math.Round(_color.B * coeff, MidpointRounding.AwayFromZero));
         }
 
-        internal static bool HasIntersectionWithAnyObject(Ray ray, IEnumerable<ISceneObject> sceneObjects, ISceneObject bypassObject)
+        internal static bool HasIntersectionWithAnyObject(Ray ray, List<IObject> objects, IObject figure)
         {
-            foreach (var sceneObject in sceneObjects)
+            foreach (var obj in objects)
             {
-                var intersectionPoint = sceneObject.GetIntersection(ray);
+                var intersection = obj.GetIntersectionWith(ray);
 
-                if (intersectionPoint is not null && intersectionPoint.Value.Object != bypassObject)
-                {
+                if (intersection.point is not null && obj != figure)
                     return true;
-                }
             }
-
             return false;
         }
     }

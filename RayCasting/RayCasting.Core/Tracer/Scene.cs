@@ -1,4 +1,5 @@
-﻿using RayCasting.Core.Objects;
+﻿using RayCasting.Core.Lights;
+using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
 
 namespace RayCasting.Core.Tracer;
@@ -8,19 +9,19 @@ public class Scene
     //MARK: - Properties
 
     public List<IObject> Objects;
-    public Point3 Light { get; set; }
+    public List<Light> Lights { get; set; }
 
     //MARK: - Initialization
 
-    public Scene(List<IObject> objects, Point3 light)
+    public Scene(List<IObject> objects, List<Light> lights)
     {
         Objects = new List<IObject>(objects);
-        Light = light;
+        Lights = lights;
     }
 
-    public Scene(Point3 light)
+    public Scene(List<Light> lights)
     {
         Objects = new List<IObject>();
-        Light = light;
+        Lights = lights;
     }
 }

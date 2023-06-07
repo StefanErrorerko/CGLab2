@@ -63,24 +63,24 @@ var pixels = rayTracer.Trace();
 var width = pixels.GetLength(1);
 var height = pixels.GetLength(0);
 var binaryData = new byte[width * height * 3];
-var colors = new Color[width, height];
+//var colors = new Color[width, height];
 
-for (int y = 0; y < height; y++)
-{
-    for (int x = 0; x < width; x++)
-    {
-        byte greyscale = (byte)(pixels[y, x] * 255.0f);
-        const int channels = 3;
-        binaryData[y * width * channels + x * channels + 0] = greyscale;
-        binaryData[y * width * channels + x * channels + 1] = greyscale;
-        binaryData[y * width * channels + x * channels + 2] = greyscale;
+//for (int y = 0; y < height; y++)
+//{
+//    for (int x = 0; x < width; x++)
+//    {
+//        byte greyscale = (byte)(pixels[y, x] * 255.0f);
+//        const int channels = 3;
+//        binaryData[y * width * channels + x * channels + 0] = greyscale;
+//        binaryData[y * width * channels + x * channels + 1] = greyscale;
+//        binaryData[y * width * channels + x * channels + 2] = greyscale;
 
-        colors[x, y] = Color.FromArgb(greyscale, greyscale, greyscale);
-    }
-}
+//        colors[x, y] = Color.FromArgb(greyscale, greyscale, greyscale);
+//    }
+//}
 
 var imageWriter = new PpmWriter();
-File.WriteAllBytes(@"/Users/bohdankonopolskyi/Desktop/NewCowShadow.ppm", imageWriter.Write(colors));
+File.WriteAllBytes(@"/Users/bohdankonopolskyi/Desktop/NewCowShadow.ppm", imageWriter.Write(pixels));
 Console.WriteLine("Finish");
 
 ConsolePresenter.Present(pixels);

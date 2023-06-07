@@ -26,32 +26,31 @@ namespace RayCasting.Core.Lights
         {
             var lightNormalized = _direction.Normalized();
 
-            var reversedLightRay = new Ray(point, point - lightNormalized);
-            if (HasIntersectionWithAnyObject(reversedLightRay, objects, figure))
+            var reversedRay = new Ray(point, point - lightNormalized);
+            if (HasIntersectionWithAnyObject(reversedRay, objects, figure))
             {
                 return Color.Black;
             }
 
-            var intersectionVectorNormalized = figure.Normal(new Vector3(point));
-            var lightCoefficient = (-1 * lightNormalized).DotProduct(intersectionVectorNormalized);
-            lightCoefficient = Math.Max(lightCoefficient, 0);
-            lightCoefficient *= _intensity;
+            var intersectionVector = figure.Normal(new Vector3(point));
+            var coeff = (lightNormalized * (-1.0f)).Dot(intersectionVector);
+            coeff = Math.Max(coeff, 0) * _intensity;
 
-            return Color.FromShadowedColor(lightCoefficient, _color);
+            return Color.FromArgb(
+                _color.A,
+                (byte)Math.Round(_color.R * coeff, MidpointRounding.AwayFromZero),
+                (byte)Math.Round(_color.G * coeff, MidpointRounding.AwayFromZero),
+                (byte)Math.Round(_color.B * coeff, MidpointRounding.AwayFromZero));
         }
 
-        internal static bool HasIntersectionWithAnyObject(Ray ray, IEnumerable<ISceneObject> sceneObjects, ISceneObject bypassObject)
+        internal static bool HasIntersectionWithAnyObject(Ray ray, List<IObject> objects, IObject figure)
         {
-            foreach (var sceneObject in sceneObjects)
+            foreach (var obj in objects)
             {
-                var intersectionPoint = sceneObject.GetIntersection(ray);
-
-                if (intersectionPoint is not null && intersectionPoint.Value.Object != bypassObject)
-                {
+                var (point, t) = obj.GetIntersectionWith(ray);
+                if (point is not null && obj != figure)
                     return true;
-                }
             }
-
             return false;
         }
     }

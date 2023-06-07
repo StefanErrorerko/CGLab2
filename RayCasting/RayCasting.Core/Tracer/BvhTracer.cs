@@ -2,6 +2,7 @@ using RayCasting.Core.BoundingVolumeHierarchies;
 using RayCasting.Core.Objects;
 using RayCasting.Core.Scene;
 using RayCasting.Core.Structures;
+using System.Drawing;
 
 namespace RayCasting.Core.Tracer;
 
@@ -21,27 +22,27 @@ public class BvhRayTracer : IRayTracer
     private BvhAccel _bvhAccel;
 
     //MARK: - Public methods
-    public float[,] Trace()
+    public Color[,] Trace()
     {
         var projectionPlane = Camera.GetProjectionPlane();
-        var pixels = new float[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
+        var pixels = new Color[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
 
         Parallel.For((long)0, projectionPlane.GetLength(0), i =>
         {
             for (int j = 0; j < projectionPlane.GetLength(1); j++)
             {
                 var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
-                var nearestIntersection = GetNearestIntersection(_bvhAccel.Root, currentRay);
-                if (nearestIntersection.point is not null)
+                var (figure, point) = GetNearestIntersection(_bvhAccel.Root, currentRay);
+                if (point is not null)
                 {
-                    var normal = nearestIntersection.figure!.Normal(new Vector3((Point3)nearestIntersection.point));
-                    var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
-                    float diffuse = Math.Clamp(val, 0, 1);
-                    float shadow = IsInShadow((Point3)nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
+                    //var normal = figure!.Normal(new Vector3((Point3)point));
+                    //var val = normal.Dot(new Vector3((Point3)point, Scene.Light).Normalized());
+                    //float diffuse = Math.Clamp(val, 0, 1);
+                    //float shadow = IsInShadow((Point3)point + normal * 0.1f) ? 0.5f : 1.0f;
 
-                    pixels[i, j] = diffuse * shadow;
+                    foreach (var light in Scene.Lights)
+                        pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects); //diffuse * shadow;                }
                 }
-            }
         });
 
         return pixels;

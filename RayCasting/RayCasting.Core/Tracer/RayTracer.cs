@@ -31,16 +31,16 @@ public class RayTracer : IRayTracer
                 for (int j = 0; j < projectionPlane.GetLength(1); j++)
                 {
                     var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
-                    var nearestIntersection = GetNearestIntersection(Scene.Objects, currentRay);
+                    var (figure, point) = GetNearestIntersection(Scene.Objects, currentRay);
                     pixels[i, j] = Color.Black;
-                    if (nearestIntersection.point is not null)
+                    if (point is not null)
                     {
-                        var normal = nearestIntersection.figure!.Normal(new Vector3((Point3)nearestIntersection.point));
-                        var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
+                        var normal = figure!.Normal(new Vector3((Point3)point));
+                        //var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
                         //float diffuse = Math.Clamp(val, 0, 1); //Vector.Dot(normal, Scene.LightSource.ToVector());
                         //float shadow = IsInShadow((Point3) nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
                         foreach (var light in Lights)
-                            pixels[i, j] = light.GetPixel(nearestIntersection.point, nearestIntersection.figure, Scene.Objects); //diffuse * shadow;
+                            pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects); //diffuse * shadow;
                     }                    
                 }
             });
