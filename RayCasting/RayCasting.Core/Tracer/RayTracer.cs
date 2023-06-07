@@ -1,4 +1,5 @@
-﻿using RayCasting.Core.Objects;
+﻿using RayCasting.Core.Lights;
+using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
 using System.Drawing;
 
@@ -16,13 +17,14 @@ public class RayTracer : IRayTracer
 
     private ICameraProtocol Camera { get; }
     private Scene Scene { get; }
+    private List<Light> Lights { get; }
 
     //MARK: - Public methods
 
-    public float[,] Trace()
+    public Color[,] Trace()
     {
         var projectionPlane = Camera.GetProjectionPlane();
-        var pixels = new float[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
+        var pixels = new Color[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
 
             Parallel.For(0, projectionPlane.GetLength(0), i =>
             {
@@ -30,14 +32,15 @@ public class RayTracer : IRayTracer
                 {
                     var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
                     var nearestIntersection = GetNearestIntersection(Scene.Objects, currentRay);
+                    pixels[i, j] = Color.Black;
                     if (nearestIntersection.point is not null)
                     {
                         var normal = nearestIntersection.figure!.Normal(new Vector3((Point3)nearestIntersection.point));
                         var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
-                        float diffuse = Math.Clamp(val, 0, 1); //Vector.Dot(normal, Scene.LightSource.ToVector());
-                        float shadow = IsInShadow((Point3) nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
-
-                        pixels[i, j] = diffuse * shadow;
+                        //float diffuse = Math.Clamp(val, 0, 1); //Vector.Dot(normal, Scene.LightSource.ToVector());
+                        //float shadow = IsInShadow((Point3) nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
+                        foreach (var light in Lights)
+                            pixels[i, j] = light.GetPixel(nearestIntersection.point, nearestIntersection.figure, Scene.Objects); //diffuse * shadow;
                     }                    
                 }
             });
