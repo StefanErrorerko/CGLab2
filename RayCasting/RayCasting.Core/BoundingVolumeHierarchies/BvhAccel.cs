@@ -56,20 +56,19 @@ public class BvhAccel
     //     return node;
     // }
 
-    BvhNode ConstructBvh(List<IObject> primitives, int maxLeafSize)
+    private BvhNode ConstructBvh(List<IObject> primitives, int maxLeafSize)
     {
         BoundingBox centroidBox = new BoundingBox();
         BoundingBox bbox = new BoundingBox();
-
-        foreach (IObject p in primitives)
+        var pbb = primitives[0].GetBoundingBox();
+        foreach (var bb in primitives.Select(p => p.GetBoundingBox()))
         {
-            BoundingBox bb = p.GetBoundingBox();
             bbox.Expand(bb);
-            Vector3 c = bb.GetCentroid();
-            centroidBox.Expand(c);
+            var centroid = bb.GetCentroid();
+            centroidBox.Expand(centroid);
         }
 
-        BvhNode? node = new BvhNode(bbox)
+        var node = new BvhNode(bbox)
         {
             Primitives = new List<IObject>(primitives)
         };
@@ -79,15 +78,43 @@ public class BvhAccel
             return node;
         }
 
-        int recAxis;
-        Vector3 bboxdim = centroidBox.Extent;
-        double max = Math.Max(bboxdim.X, Math.Max(bboxdim.Y, bboxdim.Z));
+        var recAxis = CalulateRecAxis(centroidBox);
 
-        if (max == bboxdim.X)
+        Vector3 splitPoint = centroidBox.GetCentroid();
+        List<IObject> leftChild = new List<IObject>();
+        List<IObject> rightChild = new List<IObject>();
+
+        foreach (IObject p in primitives)
+        {
+            Vector3 primitiveBbCentroid = p.GetBoundingBox().GetCentroid();
+
+            if (primitiveBbCentroid[recAxis] <= splitPoint[recAxis])
+            {
+                leftChild.Add(p);
+            }
+            else
+            {
+                rightChild.Add(p);
+            }
+        }
+
+        node.LeftChild = ConstructBvh(leftChild, maxLeafSize);
+        node.RightChild = ConstructBvh(rightChild, maxLeafSize);
+
+        return node;
+    }
+
+    private static int CalulateRecAxis(BoundingBox centroidBox)
+    {
+        int recAxis;
+        Vector3 boxExtent = centroidBox.Extent;
+        double max = Math.Max(boxExtent.X, Math.Max(boxExtent.Y, boxExtent.Z));
+
+        if (Math.Abs(max - boxExtent.X) < 0.00001)
         {
             recAxis = 0;
         }
-        else if (max == bboxdim.Y)
+        else if (Math.Abs(max - boxExtent.Y) < 0.00001)
         {
             recAxis = 1;
         }
@@ -96,66 +123,32 @@ public class BvhAccel
             recAxis = 2;
         }
 
-        Vector3 splitpoint = centroidBox.GetCentroid();
-        List<IObject>? leftPrims = new List<IObject>();
-        List<IObject>? rightPrims = new List<IObject>();
-
-        foreach (IObject p in primitives)
-        {
-            Vector3 temp = p.GetBoundingBox().GetCentroid();
-
-            if (temp[recAxis] <= splitpoint[recAxis])
-            {
-                leftPrims.Add(p);
-            }
-            else
-            {
-                rightPrims.Add(p);
-            }
-        }
-
-        node.LeftChild = ConstructBvh(leftPrims, maxLeafSize);
-        node.RightChild = ConstructBvh(rightPrims, maxLeafSize);
-
-        return node;
+        return recAxis;
     }
 
-    bool Instersect(Ray ray, BvhNode node)
+    public bool IsIntersects(Ray ray, BvhNode node)
     {
-        double t0, t1;
-        if (node.BoundingBox.Intersect(ray, out t0, out t1))
+        return Root.Primitives.Any(primitive => primitive.Intersects(ray));
+    }
+    
+    private bool Instersect(Ray ray, BvhNode node)
+    {
+        double t1;
+        if (!node.BoundingBox.Intersect(ray, out _, out t1)) return false;
+        if (!(t1 > ray.MinT) || !(t1 < ray.MaxT)) return false;
+        if (node.IsLeafNode)
         {
-            if (t1 > ray.MinT && t1 < ray.MaxT)
-            {
-                if (node.IsLeafNode())
-                {
-                    foreach (var primitive in node.Primitives)
-                    {
-                        if (primitive.Intersects(ray))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                else
-                {
-                    bool leftChild = Instersect(ray, node.LeftChild);
-                    bool rightChild = Instersect(ray, node.RightChild);
-
-                    return leftChild || rightChild;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return node.Primitives.Any(primitive => primitive.Intersects(ray));
         }
 
-        return false;
+        var isLeftChildIntersected = Instersect(ray, node.LeftChild);
+        var isRightChildIntersected = Instersect(ray, node.RightChild);
+
+        return isLeftChildIntersected || isRightChildIntersected;
     }
     
 
-    private BoundingBox ComputeBoundingBox(List<IObject> primitives)
+    private BoundingBox CalculateBoundingBox(List<IObject> primitives)
     {
         BoundingBox bbox = primitives[0].GetBoundingBox();
 
@@ -165,25 +158,7 @@ public class BvhAccel
         return bbox;
     }
 
-    private int GetSplitAxis(BoundingBox bbox)
-    {
-        Vector3 dimensions = bbox.GetDimensions();
-        int splitAxis = 0;
-        double maxDimension = dimensions.X;
-
-        if (dimensions.Y > maxDimension)
-        {
-            splitAxis = 1;
-            maxDimension = dimensions.Y;
-        }
-
-        if (dimensions.Z > maxDimension)
-            splitAxis = 2;
-
-        return splitAxis;
-    }
-
-    private float ComputeSplitPoint(List<IObject> primitives, int splitAxis)
+    private float CalculateSplitPoint(List<IObject> primitives, int splitAxis)
     {
         float centroidSum = 0.0f;
         foreach (IObject primitive in primitives)

@@ -1,4 +1,5 @@
 using RayCasting.Core.BoundingVolumeHierarchies;
+using RayCasting.Core.Lights;
 using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
 
@@ -9,13 +10,13 @@ public class BvhScene : Tracer.Scene
     public BvhNode Bvh { get; set; }
     public BoundingBox BBox { get; private set; }
 
-    public BvhScene(List<IObject> objects, Point3 light) : base(objects, light)
+    public BvhScene(List<IObject> objects, List<Light> lights) : base(objects, lights)
     {
         ConstructBVH(objects);
         DefineBoundingBox();
     }
 
-    public BvhScene(Point3 light) : base(light)
+    public BvhScene(List<Light> lights) : base(lights)
     {
     }
     

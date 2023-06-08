@@ -8,123 +8,134 @@ namespace RayCasting.Core.Tracer;
 
 public class BvhRayTracer : IRayTracer
 {
+    //MARK: - Properties
+    private ICameraProtocol Camera { get; }
+    private BvhScene Scene { get; }
+    private BvhAccel _bvhAccel;
+
+    public int BvhMaxLeafSize { get; set; } = 100;
+
     //MARK: - Initialization
     public BvhRayTracer(ICameraProtocol camera, BvhScene scene)
     {
         Camera = camera;
         Scene = scene;
-        BuildAccel();
+        _bvhAccel = new BvhAccel(Scene.Objects, BvhMaxLeafSize);
     }
-
-    //MARK: - Properties
-    private ICameraProtocol Camera { get; }
-    private BvhScene Scene { get; }
-    private BvhAccel _bvhAccel;
 
     //MARK: - Public methods
     public Color[,] Trace()
     {
         var projectionPlane = Camera.GetProjectionPlane();
         var pixels = new Color[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
-        //
-        // Parallel.For(0, projectionPlane.GetLength(0), i =>
-        // {
-        //     for (var j = 0; j < projectionPlane.GetLength(1); j++)
-        //     {
-        //         var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
-        //         var (figure, point) = GetNearestIntersection(Scene.Objects, currentRay);
-        //         
-        //         pixels[i, j] = Color.Black;
-        //         if (point is not null)
-        //         {
-        //             var normal = figure!.Normal(new Vector3((Point3)point));
-        //             // foreach (var light in Lights)
-        //             //     pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects);
-        //         }
-        //     }
-        // });
+
+        Parallel.For(0, projectionPlane.GetLength(0), i =>
+        {
+            for (var j = 0; j < projectionPlane.GetLength(1); j++)
+            {
+                var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
+                var (figure, point) = GetNearestIntersection(_bvhAccel.Root, currentRay);
+
+                pixels[i, j] = Color.Red;
+                if (point is not null)
+                {
+                    var normal = figure!.Normal(new Vector3((Point3)point));
+                    foreach (var light in Scene.Lights)
+                        pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects);
+                }
+            }
+        });
         return pixels;
     }
 
-        //MARK: - Private methods
-        public (IObject? figure, Point3? point) GetNearestIntersection(BvhNode node, Ray ray)
-        {
-            if (!node.BoundingBox.Intersect(ray, out double t0, out double t1))
-            {
-                return (null, null);
-            }
+    // public Color[,] Trace()
+    // {
+    //     var projectionPlane = Camera.GetProjectionPlane();
+    //     var pixels = new Color[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
+    //
+    //     Parallel.For((long)0, projectionPlane.GetLength(0), i =>
+    //     {
+    //         for (int j = 0; j < projectionPlane.GetLength(1); j++)
+    //         {
+    //             var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
+    //             var nearestIntersection = GetNearestIntersection(_bvhAccel.Root, currentRay);
+    //             if (nearestIntersection.point is not null)
+    //             {
+    //                 var normal = nearestIntersection.figure!.Normal(new Vector3((Point3)nearestIntersection.point));
+    //                 var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
+    //                 float diffuse = Math.Clamp(val, 0, 1);
+    //                 float shadow = IsInShadow((Point3)nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
+    //
+    //                 pixels[i, j] = diffuse * shadow;
+    //             }
+    //         }
+    //     });
+    //
+    //     return pixels;
+    // }
 
 
-            if (node.IsLeafNode())
-            {
-                return GetClosestIntersection(node.Primitives, ray);
-            }
-            else
-            {
-                var leftIntersection = GetNearestIntersection(node.LeftChild, ray);
-                var rightIntersection = GetNearestIntersection(node.RightChild, ray);
+    //MARK: - Private methods
+    private (IObject? figure, Point3? point) GetNearestIntersection(BvhNode node, Ray ray)
+    {
+        if (!node.BoundingBox.Intersect(ray, out _, out _)) return (null, null);
 
-                if (leftIntersection.point is null)
-                    return rightIntersection;
-                if (rightIntersection.point is null)
-                    return leftIntersection;
+        if (node.IsLeafNode) return GetClosestIntersection(node.Primitives, ray);
 
-                var leftDistance = ray.CalculateT((Point3)leftIntersection.point);
-                var rightDistance = ray.CalculateT((Point3)rightIntersection.point);
+        var leftIntersection = GetNearestIntersection(node.LeftChild, ray);
+        var rightIntersection = GetNearestIntersection(node.RightChild, ray);
 
-                return leftDistance < rightDistance ? leftIntersection : rightIntersection;
-            }
-        }
+        if (leftIntersection.point is null) return rightIntersection;
+        if (rightIntersection.point is null) return leftIntersection;
 
-        private (IObject? figure, Point3? point) GetClosestIntersection(List<IObject> objects, Ray ray)
-        {
-            IObject? closestObject = null;
-            Point3? closestPoint = null;
-            var closestDistance = double.MaxValue;
+        var leftDistance = ray.CalculateT(leftIntersection.point.Value);
+        var rightDistance = ray.CalculateT(rightIntersection.point.Value);
 
-            foreach (var obj in objects)
-            {
-                var intersection = obj.GetIntersectionWith(ray);
-                var intersectionPoint = intersection.point;
-
-                if (intersectionPoint is null) continue;
-
-                if (intersection.t is not null)
-                {
-                    var distanceToIntersection = intersection.t.Value;
-
-                    if (distanceToIntersection < closestDistance)
-                    {
-                        closestDistance = distanceToIntersection;
-                        closestPoint = intersectionPoint;
-                        closestObject = obj;
-                    }
-                }
-            }
-
-            return (closestObject, closestPoint);
-        }
-
-        private bool IsInShadow(Point3 intersectionPoint)
-        {
-            //TODO: update for new scene lights
-            var oppositeLightVector = new Ray(intersectionPoint, new Vector3().Normalized());
-
-            foreach (var sceneObject in _bvhAccel.Root.Primitives)
-            {
-                var overlapPoint = sceneObject.GetIntersectionWith(oppositeLightVector).point;
-                if (overlapPoint is not null)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void BuildAccel()
-        {
-            var primitives = new List<IObject>(Scene.Objects);
-            _bvhAccel = new BvhAccel(primitives, 100);
-        }
+        return leftDistance < rightDistance ? leftIntersection : rightIntersection;
     }
+
+    private (IObject? figure, Point3? point) GetClosestIntersection(List<IObject> objects, Ray ray)
+    {
+        IObject? closestObject = null;
+        Point3? closestPoint = null;
+        var closestDistance = double.MaxValue;
+
+        foreach (var obj in objects)
+        {
+            var intersection = obj.GetIntersectionWith(ray);
+
+            if (intersection.point is null || intersection.t is null) continue;
+
+            var intersectionPoint = intersection.point.Value;
+            var distanceToIntersection = intersection.t.Value;
+
+            if (!(distanceToIntersection < closestDistance)) continue;
+            closestDistance = distanceToIntersection;
+            closestPoint = intersectionPoint;
+            closestObject = obj;
+        }
+
+        return (closestObject, closestPoint);
+    }
+
+    private bool IsInShadow(Point3 intersectionPoint)
+    {
+        //TODO: update for new scene lights
+        var oppositeLightVector = new Ray(intersectionPoint, new Vector3().Normalized());
+
+        foreach (var sceneObject in _bvhAccel.Root.Primitives)
+        {
+            var overlapPoint = sceneObject.GetIntersectionWith(oppositeLightVector).point;
+            if (overlapPoint is not null) return true;
+        }
+
+        return false;
+    }
+
+    private BvhAccel BuildAccel(int maxLeafSize)
+    {
+        var primitives = new List<IObject>(Scene.Objects);
+
+        return new BvhAccel(primitives, maxLeafSize);
+    }
+}

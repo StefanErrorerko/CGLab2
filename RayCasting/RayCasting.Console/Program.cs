@@ -6,6 +6,7 @@ using System.Drawing;
 using ImageWriter;
 using PPMWriter;
 using RayCasting.Console;
+using RayCasting.Core.Lights;
 using RayCasting.Core.Misc;
 using RayCasting.Core.Scene;
 
@@ -32,7 +33,7 @@ var camera = new Camera(
     fieldOfView: 60,
     transverter);
 
- var triangles = ObjReader.ReadToTriangles(fileData);
+var triangles = ObjReader.ReadToTriangles(fileData);
 var singleTriangle = new Triangle(new Point3(10, 0, 0), new Point3(3, 0.5f, 2.8f), new Point3(3, -2.5f, -0.5f));
 // var triangles = new List<Triangle>
 // {
@@ -48,7 +49,7 @@ var objectTransverter = new Transverter();
 //     transformedTriangles.Add(objectTransverter.ApplyTransformation(triangle));
 // }
 
-var scene = new BvhScene(light: new Point3(5.5f, 1.0f, 2f));
+var scene = new BvhScene(new List<Light>(){new DirectionalLight(new Vector3(1,1,1))});
 foreach (var triangle in triangles)
 {
     scene.Objects.Add(triangle);
@@ -57,33 +58,33 @@ var disk = new Disk(new Vector3(0, 0, 1), new Vector3(0, 0, -0.5f), 50);
 // var sphere = new Sphere(center: new Vector3(x: 0, y: 0, z: 4), radius: 100);        
 // scene.Objects.Add(sphere);
 
-var rayTracer = new BvhRayTracer(camera, scene);
-var pixels = rayTracer.Trace();
+ var rayTracer = new BvhRayTracer(camera, scene);
+ var pixels = rayTracer.Trace();
 
-var width = pixels.GetLength(1);
-var height = pixels.GetLength(0);
-var binaryData = new byte[width * height * 3];
-//var colors = new Color[width, height];
+//  var width = pixels.GetLength(1);
+//  var height = pixels.GetLength(0);
+//  var binaryData = new byte[width * height * 3];
+// var colors = new Color[width, height];
+//
+// for (int y = 0; y < height; y++)
+// {
+//     for (int x = 0; x < width; x++)
+//     {
+//         
+//         const int channels = 3;
+//         binaryData[y * width * channels + x * channels + 0] = pixels[x, y];
+//         binaryData[y * width * channels + x * channels + 1] = greyscale;
+//         binaryData[y * width * channels + x * channels + 2] = greyscale;
+//
+//         colors[x, y] = Color.FromArgb(greyscale, greyscale, greyscale);
+//     }
+// }
+//
+  var imageWriter = new PpmWriter();
+  File.WriteAllBytes(@"/Users/bohdankonopolskyi/Desktop/NewCowShadow.ppm", imageWriter.Write(pixels));
+  Console.WriteLine("Finish");
 
-//for (int y = 0; y < height; y++)
-//{
-//    for (int x = 0; x < width; x++)
-//    {
-//        byte greyscale = (byte)(pixels[y, x] * 255.0f);
-//        const int channels = 3;
-//        binaryData[y * width * channels + x * channels + 0] = greyscale;
-//        binaryData[y * width * channels + x * channels + 1] = greyscale;
-//        binaryData[y * width * channels + x * channels + 2] = greyscale;
-
-//        colors[x, y] = Color.FromArgb(greyscale, greyscale, greyscale);
-//    }
-//}
-
-var imageWriter = new PpmWriter();
-File.WriteAllBytes(@"/Users/bohdankonopolskyi/Desktop/NewCowShadow.ppm", imageWriter.Write(pixels));
-Console.WriteLine("Finish");
-
-ConsolePresenter.Present(pixels);
+//  ConsolePresenter.Present(pixels);
 
 //Console.ReadLine();
 

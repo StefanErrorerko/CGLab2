@@ -77,7 +77,11 @@ public struct Vector3
     {
         return new Vector3(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs);
     }
-    
+    /// <summary>
+    /// Returns reference to the specified component (0-based indexing: x, y, z)
+    /// </summary>
+    /// <param name="index"></param>
+    /// <exception cref="IndexOutOfRangeException"></exception>
     public float this[int index]
     {
         get
@@ -91,10 +95,4 @@ public struct Vector3
             };
         }
     }
-    
-    public float MagnitudeSquared()
-    {
-        return X * X + Y * Y + Z * Z;
-    }
-
 }

@@ -8,8 +8,9 @@ public struct BoundingBox
     public Vector3 Min, Max, Extent;
 
     public BoundingBox() :
-        this(new Vector3(float.MinValue, float.MinValue, float.MinValue),
-            new Vector3(float.MaxValue, float.MaxValue, float.MaxValue))
+        this(
+            new Vector3(float.MaxValue, float.MaxValue, float.MaxValue),
+            new Vector3(float.MinValue, float.MinValue, float.MinValue))
     {
     }
 
@@ -27,20 +28,20 @@ public struct BoundingBox
     public bool Intersect(Ray ray, out float tMin)
     {
         tMin = 0.0f;
-        float tMax = float.MaxValue;
+        const float tMax = float.MaxValue;
 
         // Calculate the inverse direction components to avoid divisions inside the loop
-        float invDirX = 1.0f / ray.Direction.X;
-        float invDirY = 1.0f / ray.Direction.Y;
-        float invDirZ = 1.0f / ray.Direction.Z;
+        var invDirX = 1.0f / ray.Direction.X;
+        var invDirY = 1.0f / ray.Direction.Y;
+        var invDirZ = 1.0f / ray.Direction.Z;
 
         // Calculate t-values for each slab of the bounding box
-        float tMinX = (Min.X - ray.Origin.X) * invDirX;
-        float tMaxX = (Max.X - ray.Origin.X) * invDirX;
-        float tMinY = (Min.Y - ray.Origin.Y) * invDirY;
-        float tMaxY = (Max.Y - ray.Origin.Y) * invDirY;
-        float tMinZ = (Min.Z - ray.Origin.Z) * invDirZ;
-        float tMaxZ = (Max.Z - ray.Origin.Z) * invDirZ;
+        var tMinX = (Min.X - ray.Origin.X) * invDirX;
+        var tMaxX = (Max.X - ray.Origin.X) * invDirX;
+        var tMinY = (Min.Y - ray.Origin.Y) * invDirY;
+        var tMaxY = (Max.Y - ray.Origin.Y) * invDirY;
+        var tMinZ = (Min.Z - ray.Origin.Z) * invDirZ;
+        var tMaxZ = (Max.Z - ray.Origin.Z) * invDirZ;
 
         // Find the largest tMin value
         tMin = Math.Max(Math.Max(Math.Min(tMinX, tMaxX), Math.Min(tMinY, tMaxY)), Math.Min(tMinZ, tMaxZ));
@@ -49,6 +50,7 @@ public struct BoundingBox
         return tMax >= tMin;
     }
 
+    // checked
     public Vector3 GetCentroid()
     {
         // double centerX = (Min.X + Max.X) * 0.5;
@@ -70,6 +72,7 @@ public struct BoundingBox
         Max.Z = Math.Max(Max.Z, point.Z);
     }
 
+    //checked
     public void Expand(BoundingBox otherBox)
     {
         Min.X = Math.Min(Min.X, otherBox.Min.X);
@@ -83,6 +86,7 @@ public struct BoundingBox
         Extent = Max - Min;
     }
 
+    //checked
     public void Expand(Vector3 vector)
     {
         Min.X = Math.Min(Min.X, vector.X);
@@ -94,6 +98,7 @@ public struct BoundingBox
         Max.Z = Math.Max(Max.Z, vector.Z);
     }
 
+    //checked
     public bool IsEmpty => Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z;
 
     public double SurfaceArea()
@@ -105,9 +110,9 @@ public struct BoundingBox
 
     public Vector3 GetDimensions()
     {
-        float width = Max.X - Min.X;
-        float height = Max.Y - Min.Y;
-        float depth = Max.Z - Min.Z;
+        var width = Max.X - Min.X;
+        var height = Max.Y - Min.Y;
+        var depth = Max.Z - Min.Z;
 
         return new Vector3(width, height, depth);
     }
