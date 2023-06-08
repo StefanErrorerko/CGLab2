@@ -43,7 +43,7 @@ namespace RayCasting.Core.Lights
                 (byte)Math.Round(Color.B * coeff, MidpointRounding.AwayFromZero));
         }
 
-        internal static bool HasIntersectionWithAnyObject(Ray ray, List<IObject> objects, IObject figure)
+        private static bool HasIntersectionWithAnyObject(Ray ray, List<IObject> objects, IObject figure)
         {
             foreach (var obj in objects)
             {

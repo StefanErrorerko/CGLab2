@@ -49,7 +49,7 @@ var objectTransverter = new Transverter();
 //     transformedTriangles.Add(objectTransverter.ApplyTransformation(triangle));
 // }
 
-var scene = new BvhScene(new List<Light>(){new DirectionalLight(new Vector3(1,1,1))});
+var scene = new BvhScene(new List<Light>(){new DirectionalLight(new Vector3(5,0,0))}, camera);
 foreach (var triangle in triangles)
 {
     scene.Objects.Add(triangle);
@@ -58,7 +58,7 @@ var disk = new Disk(new Vector3(0, 0, 1), new Vector3(0, 0, -0.5f), 50);
 // var sphere = new Sphere(center: new Vector3(x: 0, y: 0, z: 4), radius: 100);        
 // scene.Objects.Add(sphere);
 
- var rayTracer = new BvhRayTracer(camera, scene);
+ var rayTracer = new BvhRayTracer(scene);
  var pixels = rayTracer.Trace();
 
 //  var width = pixels.GetLength(1);

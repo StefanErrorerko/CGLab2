@@ -5,7 +5,9 @@ namespace RayCasting.Core.BoundingVolumeHierarchies;
 
 public struct BoundingBox
 {
-    public Vector3 Min, Max, Extent;
+    public Vector3 Min;
+    public Vector3 Max;
+    public Vector3 Extent;
 
     public BoundingBox() :
         this(
@@ -25,39 +27,9 @@ public struct BoundingBox
     {
     }
 
-    public bool Intersect(Ray ray, out float tMin)
-    {
-        tMin = 0.0f;
-        const float tMax = float.MaxValue;
-
-        // Calculate the inverse direction components to avoid divisions inside the loop
-        var invDirX = 1.0f / ray.Direction.X;
-        var invDirY = 1.0f / ray.Direction.Y;
-        var invDirZ = 1.0f / ray.Direction.Z;
-
-        // Calculate t-values for each slab of the bounding box
-        var tMinX = (Min.X - ray.Origin.X) * invDirX;
-        var tMaxX = (Max.X - ray.Origin.X) * invDirX;
-        var tMinY = (Min.Y - ray.Origin.Y) * invDirY;
-        var tMaxY = (Max.Y - ray.Origin.Y) * invDirY;
-        var tMinZ = (Min.Z - ray.Origin.Z) * invDirZ;
-        var tMaxZ = (Max.Z - ray.Origin.Z) * invDirZ;
-
-        // Find the largest tMin value
-        tMin = Math.Max(Math.Max(Math.Min(tMinX, tMaxX), Math.Min(tMinY, tMaxY)), Math.Min(tMinZ, tMaxZ));
-
-        // Check for valid intersection
-        return tMax >= tMin;
-    }
-
     // checked
     public Vector3 GetCentroid()
     {
-        // double centerX = (Min.X + Max.X) * 0.5;
-        // double centerY = (Min.Y + Max.Y) * 0.5;
-        // double centerZ = (Min.Z + Max.Z) * 0.5;
-        //
-        // return new Vector3((float)centerX, (float)centerY, (float)centerZ);
         return (Min + Max) * 0.5f;
     }
 
@@ -99,7 +71,7 @@ public struct BoundingBox
     }
 
     //checked
-    public bool IsEmpty => Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z;
+    private bool IsEmpty => Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z;
 
     public double SurfaceArea()
     {
@@ -117,76 +89,90 @@ public struct BoundingBox
         return new Vector3(width, height, depth);
     }
 
-    // public bool Intersect(Ray ray, out float t0, out float t1)
+    // public bool Intersect(Ray r, out double t0, out double t1)
     // {
-    //     float tmin = float.MinValue;
-    //     float tmax = float.MaxValue;
+    //     double tmin = (Min.X - r.Origin.X) / r.Direction.X;
+    //     double tmax = (Max.X - r.Origin.X) / r.Direction.X;
+    //     if (tmin > tmax)
+    //         (tmin, tmax) = (tmax, tmin);
     //
-    //     for (int i = 0; i < 3; i++)
-    //     {
-    //         if (Math.Abs(ray.Direction[i]) < 1e-6)
-    //         {
-    //             if (ray.Origin[i] < Min[i] || ray.Origin[i] > Max[i])
-    //             {
-    //                 t0 = tmin;
-    //                 t1 = tmax;
-    //                 return false;
-    //             }
-    //         }
-    //         else
-    //         {
-    //             float invDir = 1.0f / ray.Direction[i];
-    //             float tNear = (Min[i] - ray.Origin[i]) * invDir;
-    //             float tFar = (Max[i] - ray.Origin[i]) * invDir;
+    //     double tymin = (Min.Y - r.Origin.Y) / r.Direction.Y;
+    //     double tymax = (Max.Y - r.Origin.Y) / r.Direction.Y;
+    //     if (tymin > tymax)
+    //         (tymin, tymax) = (tymax, tymin);
     //
-    //             if (tNear > tFar)
-    //                 Swap(ref tNear, ref tFar);
+    //     double tzmin = (Min.Z - r.Origin.Z) / r.Direction.Z;
+    //     double tzmax = (Max.Z - r.Origin.Z) / r.Direction.Z;
+    //     if (tzmin > tzmax)
+    //         (tzmin, tzmax) = (tzmax, tzmin);
     //
-    //             tmin = Math.Max(tmin, tNear);
-    //             tmax = Math.Min(tmax, tFar);
-    //
-    //             if (tmin > tmax)
-    //             {
-    //                 t0 = tmin;
-    //                 t1 = tmax;
-    //                 return false;
-    //             }
-    //         }
-    //     }
+    //     tmin = Math.Max(Math.Max(tmin, tymin), tzmin);
+    //     tmax = Math.Min(Math.Min(tmax, tymax), tzmax);
     //
     //     t0 = tmin;
     //     t1 = tmax;
-    //     return true;
+    //
+    //     return t0 <= t1;
     // }
-
-    public bool Intersect(Ray r, out double t0, out double t1)
+    
+    public bool IntersectsWithRay(in Ray ray, out float t)
     {
-        double tmin = (Min.X - r.Origin.X) / r.Direction.X;
-        double tmax = (Max.X - r.Origin.X) / r.Direction.X;
-        if (tmin > tmax)
-            (tmin, tmax) = (tmax, tmin);
+        var tMin = (Min.X - ray.Origin.X) / ray.Direction.X;
+        var tMax = (Max.X - ray.Origin.X) / ray.Direction.X;
+        t = 0;
+        
+        if (tMin > tMax)
+        {
+            (tMin, tMax) = (tMax, tMin);
+        }
 
-        double tymin = (Min.Y - r.Origin.Y) / r.Direction.Y;
-        double tymax = (Max.Y - r.Origin.Y) / r.Direction.Y;
+        var tymin = (Min.Y - ray.Origin.Y) / ray.Direction.Y;
+        var tymax = (Max.Y - ray.Origin.Y) / ray.Direction.Y;
+
         if (tymin > tymax)
+        {
             (tymin, tymax) = (tymax, tymin);
+        }
 
-        double tzmin = (Min.Z - r.Origin.Z) / r.Direction.Z;
-        double tzmax = (Max.Z - r.Origin.Z) / r.Direction.Z;
+        if ((tMin > tymax) || (tymin > tMax))
+        {
+            t = -1;
+            return false;
+        }
+
+        if (tymin > tMin)
+            tMin = tymin;
+
+        if (tymax < tMax)
+            tMax = tymax;
+
+        var tzmin = (Min.Z - ray.Origin.Z) / ray.Direction.Z;
+        var tzmax = (Max.Z - ray.Origin.Z) / ray.Direction.Z;
+
         if (tzmin > tzmax)
+        {
             (tzmin, tzmax) = (tzmax, tzmin);
+        }
 
-        tmin = Math.Max(Math.Max(tmin, tymin), tzmin);
-        tmax = Math.Min(Math.Min(tmax, tymax), tzmax);
+        if ((tMin > tzmax) || (tzmin > tMax))
+        {
+            t = -1;
+            return false;
+        }
 
-        t0 = tmin;
-        t1 = tmax;
+        if (tzmin > tMin)
+            tMin = tzmin;
 
-        return t0 <= t1;
+        if (tzmax < tMax)
+            tMax = tzmax;
+
+        t = tMin;
+
+        if (tMax < tMin || tMax < 0)
+        {
+            t = -1;
+            return false;
+        }
+        return true;
     }
-
-    // private void Swap(ref float a, ref float b)
-    // {
-    //     (a, b) = (b, a);
-    // }
 }

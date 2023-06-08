@@ -7,37 +7,33 @@ namespace RayCasting.Core.Tracer;
 
 public class RayTracer : IRayTracer
 {
+    //MARK: - Properties
+    private Scene Scene { get; }
+    
     //MARK: - Initialization
-    public RayTracer(ICameraProtocol camera, Scene scene)
+    public RayTracer( Scene scene)
     {
-        Camera = camera;
         Scene = scene;
     }
-    //MARK: - Properties
-
-    private ICameraProtocol Camera { get; }
-    private Scene Scene { get; }
-    private List<Light> Lights { get; }
 
     //MARK: - Public methods
-
     public Color[,] Trace()
     {
-        var projectionPlane = Camera.GetProjectionPlane();
+        var projectionPlane = Scene.Camera.GetProjectionPlane();
         var pixels = new Color[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
 
         Parallel.For(0, projectionPlane.GetLength(0), i =>
         {
             for (var j = 0; j < projectionPlane.GetLength(1); j++)
             {
-                var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
+                var currentRay = new Ray(Scene.Camera.Origin, projectionPlane[i, j]);
                 var (figure, point) = GetNearestIntersection(Scene.Objects, currentRay);
                 
                 pixels[i, j] = Color.Black;
                 if (point is not null)
                 {
                     var normal = figure!.Normal(new Vector3((Point3)point));
-                    foreach (var light in Lights)
+                    foreach (var light in Scene.Lights)
                         pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects);
                 }
             }

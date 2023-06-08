@@ -131,15 +131,15 @@ public class BvhAccel
         return Root.Primitives.Any(primitive => primitive.Intersects(ray));
     }
     
-    private bool Instersect(Ray ray, BvhNode node)
+    public bool Instersect(Ray ray, BvhNode node)
     {
-        double t1;
-        if (!node.BoundingBox.Intersect(ray, out _, out t1)) return false;
-        if (!(t1 > ray.MinT) || !(t1 < ray.MaxT)) return false;
+        var t = float.MaxValue;
+        if (!node.BoundingBox.IntersectsWithRay(ray,out t)) 
+            return false;
+
         if (node.IsLeafNode)
-        {
             return node.Primitives.Any(primitive => primitive.Intersects(ray));
-        }
+        
 
         var isLeftChildIntersected = Instersect(ray, node.LeftChild);
         var isRightChildIntersected = Instersect(ray, node.RightChild);
@@ -147,7 +147,49 @@ public class BvhAccel
         return isLeftChildIntersected || isRightChildIntersected;
     }
     
+    public (IObject? figure, Point3? point) GetNearestIntersection(BvhNode node, Ray ray)
+    {
+        float t;
+        if (!node.BoundingBox.IntersectsWithRay(ray, out t)) return (null, null);
 
+        if (node.IsLeafNode) return GetClosestIntersection(node.Primitives, ray);
+
+        var leftIntersection = GetNearestIntersection(node.LeftChild, ray);
+        var rightIntersection = GetNearestIntersection(node.RightChild, ray);
+
+        if (leftIntersection.point is null) return rightIntersection;
+        if (rightIntersection.point is null) return leftIntersection;
+
+        var leftDistance = ray.CalculateT(leftIntersection.point.Value);
+        var rightDistance = ray.CalculateT(rightIntersection.point.Value);
+
+        return leftDistance < rightDistance ? leftIntersection : rightIntersection;
+    }
+
+    private (IObject? figure, Point3? point) GetClosestIntersection(List<IObject> objects, Ray ray)
+    {
+        IObject? closestObject = null;
+        Point3? closestPoint = null;
+        var closestDistance = double.MaxValue;
+
+        foreach (var obj in objects)
+        {
+            var intersection = obj.GetIntersectionWith(ray);
+
+            if (intersection.point is null || intersection.t is null) continue;
+
+            var intersectionPoint = intersection.point.Value;
+            var distanceToIntersection = intersection.t.Value;
+
+            if (!(distanceToIntersection < closestDistance)) continue;
+            closestDistance = distanceToIntersection;
+            closestPoint = intersectionPoint;
+            closestObject = obj;
+        }
+
+        return (closestObject, closestPoint);
+    }
+    
     private BoundingBox CalculateBoundingBox(List<IObject> primitives)
     {
         BoundingBox bbox = primitives[0].GetBoundingBox();
