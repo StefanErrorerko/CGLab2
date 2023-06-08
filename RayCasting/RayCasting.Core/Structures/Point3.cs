@@ -23,7 +23,7 @@ public struct Point3
         var c = Math.Pow(rhs.Z - Z, 2);
         return (float)Math.Sqrt(a + b + c);
     }
-    
+
     // Operators
     public static Point3 operator +(Point3 lhs, Vector3 rhs)
     {
@@ -58,7 +58,7 @@ public struct Point3
             };
         }
     }
-    
+
     public float MagnitudeSquared()
     {
         return X * X + Y * Y + Z * Z;

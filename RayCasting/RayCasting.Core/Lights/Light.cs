@@ -1,37 +1,34 @@
 ﻿using RayCasting.Core.Objects;
 using RayCasting.Core.Structures;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RayCasting.Core.Lights
+namespace RayCasting.Core.Lights;
+
+public abstract class Light
 {
-    public abstract class Light
+    protected readonly Color Color;
+    protected readonly float Intensity;
+
+    protected Light(Color color, float intensity)
     {
-        protected readonly Color _color;
-        protected readonly float _intensity;
+        Color = color;
+        if (intensity is < 0 or > 1)
+            throw new ArgumentOutOfRangeException("Intensity value is out of range");
+        Intensity = intensity;
+    }
 
-        public Light(Color color, float intensity)
-        {
-            _color = color;
-            if (intensity is < 0 or > 1)
-                throw new ArgumentOutOfRangeException("Intensity value is out of range");
-            _intensity = intensity;
-        }
+    protected Light(float intensity) : this(Color.White, intensity)
+    {
+    }
 
-        public Light(float intensity) : this(Color.White, intensity) { }
-        public virtual Color GetPixel(Point3 point, IObject figure, List<IObject> objects)
-        {
-            var coeff = 1.0f;
-            coeff *= _intensity;
-            return Color.FromArgb(
-                _color.A,
-                (byte)Math.Round(_color.R * coeff, MidpointRounding.AwayFromZero),
-                (byte)Math.Round(_color.G * coeff, MidpointRounding.AwayFromZero),
-                (byte)Math.Round(_color.B * coeff, MidpointRounding.AwayFromZero));
-        }
+    public virtual Color GetPixel(Point3 point, IObject figure, List<IObject> objects)
+    {
+        var coeff = 1.0f;
+        coeff *= Intensity;
+        return Color.FromArgb(
+            Color.A,
+            (byte)Math.Round(Color.R * coeff, MidpointRounding.AwayFromZero),
+            (byte)Math.Round(Color.G * coeff, MidpointRounding.AwayFromZero),
+            (byte)Math.Round(Color.B * coeff, MidpointRounding.AwayFromZero));
     }
 }

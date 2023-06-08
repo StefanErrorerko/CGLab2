@@ -34,13 +34,13 @@ namespace RayCasting.Core.Lights
 
             var intersectionVector = figure.Normal(new Vector3(point));
             var coeff = (lightDirection * (-1.0f)).Dot(intersectionVector);
-            coeff = Math.Max(coeff, 0) * _intensity;
+            coeff = Math.Max(coeff, 0) * Intensity;
 
             return Color.FromArgb(
-                _color.A,
-                (byte)Math.Round(_color.R * coeff, MidpointRounding.AwayFromZero),
-                (byte)Math.Round(_color.G * coeff, MidpointRounding.AwayFromZero),
-                (byte)Math.Round(_color.B * coeff, MidpointRounding.AwayFromZero));
+                Color.A,
+                (byte)Math.Round(Color.R * coeff, MidpointRounding.AwayFromZero),
+                (byte)Math.Round(Color.G * coeff, MidpointRounding.AwayFromZero),
+                (byte)Math.Round(Color.B * coeff, MidpointRounding.AwayFromZero));
         }
 
         internal static bool HasIntersectionWithAnyObject(Ray ray, List<IObject> objects, IObject figure)

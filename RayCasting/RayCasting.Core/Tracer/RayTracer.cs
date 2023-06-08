@@ -26,46 +26,24 @@ public class RayTracer : IRayTracer
         var projectionPlane = Camera.GetProjectionPlane();
         var pixels = new Color[projectionPlane.GetLength(0), projectionPlane.GetLength(1)];
 
-            Parallel.For(0, projectionPlane.GetLength(0), i =>
+        Parallel.For(0, projectionPlane.GetLength(0), i =>
+        {
+            for (var j = 0; j < projectionPlane.GetLength(1); j++)
             {
-                for (int j = 0; j < projectionPlane.GetLength(1); j++)
+                var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
+                var (figure, point) = GetNearestIntersection(Scene.Objects, currentRay);
+                
+                pixels[i, j] = Color.Black;
+                if (point is not null)
                 {
-                    var currentRay = new Ray(Camera.Origin, projectionPlane[i, j]);
-                    var (figure, point) = GetNearestIntersection(Scene.Objects, currentRay);
-                    pixels[i, j] = Color.Black;
-                    if (point is not null)
-                    {
-                        var normal = figure!.Normal(new Vector3((Point3)point));
-                        //var val = normal.Dot(new Vector3((Point3)nearestIntersection.point, Scene.Light).Normalized());
-                        //float diffuse = Math.Clamp(val, 0, 1); //Vector.Dot(normal, Scene.LightSource.ToVector());
-                        //float shadow = IsInShadow((Point3) nearestIntersection.point + normal * 0.1f) ? 0.5f : 1.0f;
-                        foreach (var light in Lights)
-                            pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects); //diffuse * shadow;
-                    }                    
+                    var normal = figure!.Normal(new Vector3((Point3)point));
+                    foreach (var light in Lights)
+                        pixels[i, j] = light.GetPixel((Point3)point, figure, Scene.Objects);
                 }
-            });
+            }
+        });
         return pixels;
     }
-
-    //MARK: - Private methods
-
-    // private (IObject? Object, float? T) GetClosestObject(IList<IObject> objects, Ray ray)
-    // {
-    //     IObject closestObject = null;
-    //     float? closestT = null;
-    //
-    //     foreach (var obj in objects)
-    //     {
-    //         var t = obj.Intersects(ray);
-    //         if (t.HasValue && (closestT == null || t < closestT))
-    //         {
-    //             closestObject = obj;
-    //             closestT = t;
-    //         }
-    //     }
-    //
-    //     return (Object: closestObject, T: closestT);
-    // }
 
     public (IObject? figure, Point3? point) GetNearestIntersection(List<IObject> objects, Ray ray)
     {
@@ -97,8 +75,9 @@ public class RayTracer : IRayTracer
 
     private bool IsInShadow(Point3 intersectionPoint)
     {
+        //TODO: update for new scene lights
         var oppositeLightVector =
-            new Ray(intersectionPoint, new Vector3(Scene.Light).Normalized());
+            new Ray(intersectionPoint, new Vector3().Normalized());
 
         var isOnShadow = false;
         foreach (var sceneObject in Scene.Objects)
